@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    #parse("org/n3r/quartz/glass/velocity/widgets/head.vm")
+</head>
+<body>
+    #parse("org/n3r/quartz/glass/velocity/widgets/menu.vm")
+
+<h1><span>Defined jobs</span></h1>
+
+<div class="table">
+    <table>
+        <thead>
+        <tr>
+            <th>Group / name</th>
+            <th>Class</th>
+            <th>Delete</th>
+        </tr>
+        </thead>
+        <tbody>
+            #foreach ($job in $jobs)
+            <tr>
+                <td style="text-align: center;"><a
+                        href="$root/jobs/$format.html($job.group)/$format.html($job.name)">$format.html($job.group)
+                    / $format.html($job.name)</a></td>
+                <td style="text-align: center;">${job.jobClass.name}</td>
+                <td style="text-align: center;">
+                    <a onclick="javascript:return(confirm('Are you sure you want to delete ?'));"
+                       href="$root/jobs/$format.html($job.group)/$format.html($job.name)/delete">
+                        <img alt="delete" src="$root/image/delete.png"/>
+                    </a>
+                </td>
+            </tr>
+            #end
+        </tbody>
+    </table>
+</div>
+
+    #parse("org/n3r/quartz/glass/velocity/widgets/footer.vm")
+</body>
+</html>

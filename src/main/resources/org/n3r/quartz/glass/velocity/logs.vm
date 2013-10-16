@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+
+    #parse("org/n3r/quartz/glass/velocity/macro/macros.vm")
+
+<html>
+<head>
+    #parse("org/n3r/quartz/glass/velocity/widgets/head.vm")
+</head>
+<body>
+    #parse("org/n3r/quartz/glass/velocity/widgets/menu.vm")
+
+<div class="subMenu">
+    <a href="/glass/logs">all</a>
+    <a href="/glass/logs/warn">warns</a>
+    <a href="/glass/logs/error">errors</a>
+</div>
+
+    #parse("org/n3r/quartz/glass/velocity/widgets/pages.vm")
+
+    #history("h1" "Execution history" $page.items)
+
+<div class="pages">
+    <a href="${root}/logs/clear">clear logs</a>
+</div>
+
+    #parse("org/n3r/quartz/glass/velocity/widgets/footer.vm")
+</body>
+</html>

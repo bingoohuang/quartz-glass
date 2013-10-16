@@ -1,17 +1,12 @@
-/**
- * 
- */
 package net.redhogs.cronparser.builder;
 
-import java.text.MessageFormat;
-import java.util.Locale;
-
 import net.redhogs.cronparser.DateAndTimeUtils;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.text.WordUtils;
 import org.joda.time.format.DateTimeFormat;
 
+import java.text.MessageFormat;
+import java.util.Locale;
 
 
 /**

@@ -1,0 +1,52 @@
+<web-app xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+         version="2.5">
+
+    <!-- utf-8 filter -->
+    <filter>
+        <filter-name>charsetFilter</filter-name>
+        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>charsetFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <!-- Spring MVC -->
+    <servlet>
+        <servlet-name>spring</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>classpath:org/n3r/quartz/glass/springConfig.xml</param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>spring</servlet-name>
+        <url-pattern>/glass/*</url-pattern>
+    </servlet-mapping>
+
+    <welcome-file-list>
+        <welcome-file>glass/index</welcome-file>
+    </welcome-file-list>
+
+    <!-- Error pages handling -->
+    <error-page>
+        <error-code>400</error-code>
+        <location>/400.txt</location>
+    </error-page>
+    <error-page>
+        <error-code>404</error-code>
+        <location>/404.txt</location>
+    </error-page>
+    <!---->
+    <!--<error-page>-->
+    <!--<error-code>500</error-code>-->
+    <!--<location>/500.txt</location>-->
+    <!--</error-page>-->
+
+</web-app>

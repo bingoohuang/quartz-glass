@@ -1,11 +1,8 @@
-/**
- * 
- */
 package net.redhogs.cronparser.builder;
 
-import java.text.MessageFormat;
-
 import net.redhogs.cronparser.DateAndTimeUtils;
+
+import java.text.MessageFormat;
 
 
 /**

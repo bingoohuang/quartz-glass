@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    #parse("org/n3r/quartz/glass/velocity/widgets/head.vm")
+</head>
+<body>
+    #parse("org/n3r/quartz/glass/velocity/widgets/menu.vm")
+
+<h1><span>Edit cron trigger</span></h1>
+
+<div class="table">
+    <form action="$root/jobs/$format.html($group)/$format.html($name)/triggers/$format.html($triggerGroup)/$format.html($triggerName)/edit-cron"
+          method="POST">
+        <table>
+            <tr>
+                <td>job group :</td>
+                <td>$format.html($trigger.jobKey.group)</td>
+            </tr>
+            <tr>
+                <td>job name :</td>
+                <td>$format.html($trigger.jobKey.name)</td>
+            </tr>
+            <tr>
+                <td>group :</td>
+                <td>$format.html($trigger.key.group)</td>
+            </tr>
+            <tr>
+                <td>name :</td>
+                <td>$format.html($trigger.key.name)</td>
+            </tr>
+            #springBind("form.startTime")
+            <tr>
+                <td>start time ($format.datePattern()) :</td>
+                <td>
+                    <input type="text" name="startTime" value="$!format.html($status.value)"/>
+                    &nbsp;leave blank to start now
+                    #if(${status.error}) <span class="error">${status.errorMessage}</span> #end
+                </td>
+            </tr>
+            #springBind("form.endTime")
+            <tr>
+                <td>end time ($format.datePattern()) :</td>
+                <td>
+                    <input type="text" name="endTime" value="$!format.html($status.value)"/>
+                    #if(${status.error}) <span class="error">${status.errorMessage}</span> #end
+                </td>
+            </tr>
+            #springBind("form.cronExpression")
+            <tr>
+                <td>cron expression :</td>
+                <td>
+                    <input type="text" name="cronExpression" value="$!format.html($status.value)"/>
+                    #if(${status.error}) <span class="error">${status.errorMessage}</span> #end
+                    &nbsp;<a href="#cron-documentation">documentation</a>
+                </td>
+            </tr>
+            #springBind("form.dataMap")
+            <tr>
+                <td>data map :</td>
+                <td><textarea name="dataMap" rows="20" cols="100">$!format.html($status.value)</textarea></td>
+            </tr>
+        </table>
+        <input type="submit" value="update cron trigger"/>
+    </form>
+</div>
+
+    #parse("org/n3r/quartz/glass/velocity/widgets/args.vm")
+
+    #parse("org/n3r/quartz/glass/velocity/widgets/cron_doc.vm")
+
+    #parse("org/n3r/quartz/glass/velocity/widgets/footer.vm")
+</body>
+</html>

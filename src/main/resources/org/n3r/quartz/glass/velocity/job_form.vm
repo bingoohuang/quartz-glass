@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    #parse("org/n3r/quartz/glass/velocity/widgets/head.vm")
+</head>
+<body>
+    #parse("org/n3r/quartz/glass/velocity/widgets/menu.vm")
+
+<h1><span>Edit job</span></h1>
+
+<div class="table">
+    <form id="jobActionForm" action="$root/jobs/$format.html($group)/$format.html($name)/edit" method="POST">
+        <table>
+            <tr>
+                <td>jobClass</td>
+                <td>$format.html($jobClass.name)</td>
+            </tr>
+            <tr>
+                <td>Disallow concurrent execution</td>
+                <td id="disallowConcurrentExecution">$jobBean.disallowConcurrentExecution</td>
+            </tr>
+            <tr>
+                <td>Persist job data after execution</td>
+                <td id="persistJobDataAfterExecution">$jobBean.persistJobDataAfterExecution</td>
+            </tr>
+            #if ($utils.isNotEmpty($jobDescription))
+                <tr>
+                    <td>description</td>
+                    <td>$format.html($jobDescription)</td>
+                </tr>
+            #end
+            <tr>
+                <td>group</td>
+                <td>$format.html($group)</td>
+            </tr>
+            <tr>
+                <td>name</td>
+                <td>$format.html($name)</td>
+            </tr>
+            #springBind("form.dataMap")
+            <tr>
+                <td valign="top">data map</td>
+                <td><textarea name="dataMap" rows="20" cols="100">$!format.html($status.value)</textarea></td>
+            </tr>
+        </table>
+        <input type="submit" value="update job"/>
+    </form>
+</div>
+
+    #parse("org/n3r/quartz/glass/velocity/widgets/args.vm")
+
+    #parse("org/n3r/quartz/glass/velocity/widgets/footer.vm")
+
+</body>
+</html>

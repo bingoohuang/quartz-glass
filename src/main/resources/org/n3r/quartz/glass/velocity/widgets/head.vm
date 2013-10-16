@@ -1,0 +1,6 @@
+<title>Glass</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+
+<link rel="stylesheet" href="$root/css/style.css" type="text/css" charset="utf-8"/>
+<script type="text/javascript" src="$root/js/jquery-1.6.2.min.js"></script>
+<script type="text/javascript" src="$root/js/glass.js"></script>

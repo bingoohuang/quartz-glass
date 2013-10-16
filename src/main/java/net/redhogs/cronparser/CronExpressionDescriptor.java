@@ -1,24 +1,14 @@
-/**
- * 
- */
 package net.redhogs.cronparser;
+
+import net.redhogs.cronparser.builder.*;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.MessageFormat;
 import java.text.ParseException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import net.redhogs.cronparser.builder.DayOfMonthDescriptionBuilder;
-import net.redhogs.cronparser.builder.DayOfWeekDescriptionBuilder;
-import net.redhogs.cronparser.builder.HoursDescriptionBuilder;
-import net.redhogs.cronparser.builder.MinutesDescriptionBuilder;
-import net.redhogs.cronparser.builder.MonthDescriptionBuilder;
-import net.redhogs.cronparser.builder.SecondsDescriptionBuilder;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 
 
 /**
@@ -28,7 +18,7 @@ import org.slf4j.LoggerFactory;
 public class CronExpressionDescriptor {
 
     private static final Logger LOG = LoggerFactory.getLogger(CronExpressionDescriptor.class);
-    private static final char[] specialCharacters = new char[] { '/', '-', ',', '*' };
+    private static final char[] specialCharacters = new char[]{'/', '-', ',', '*'};
 
     private CronExpressionDescriptor() {
     }

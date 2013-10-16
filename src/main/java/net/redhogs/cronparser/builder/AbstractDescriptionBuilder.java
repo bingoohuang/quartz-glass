@@ -1,12 +1,9 @@
-/**
- * 
- */
 package net.redhogs.cronparser.builder;
-
-import java.text.MessageFormat;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.math.NumberUtils;
+
+import java.text.MessageFormat;
 
 
 /**
@@ -15,7 +12,7 @@ import org.apache.commons.lang3.math.NumberUtils;
  */
 public abstract class AbstractDescriptionBuilder {
 
-    protected static final char[] specialCharsMinusStar = new char[] { '/', '-', ',' };
+    protected static final char[] specialCharsMinusStar = new char[]{'/', '-', ','};
 
     public String getSegmentDescription(String expression, String allDescription) {
         String description = "";

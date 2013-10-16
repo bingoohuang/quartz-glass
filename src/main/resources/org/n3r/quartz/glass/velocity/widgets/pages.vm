@@ -1,0 +1,18 @@
+<div class="pages">
+    #if ($page.query.oneBasedIndex != 1)
+        #set($prev = $page.query.oneBasedIndex - 1)
+        <a href="?index=$prev">prev</a>
+    #else
+        <a href="" style="visibility: hidden">prev</a>
+    #end
+    <form action="">
+        <input name="index" value="$page.query.oneBasedIndex" size="4">
+    </form>
+    <span>/ $page.count</span>
+    #if ($page.query.oneBasedIndex != $page.count)
+        #set($next = $page.query.oneBasedIndex + 1)
+        <a href="?index=$next">next</a>
+    #else
+        <a href="" style="visibility: hidden">next</a>
+    #end
+</div>

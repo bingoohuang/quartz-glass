@@ -1,12 +1,9 @@
-/**
- * 
- */
 package net.redhogs.cronparser;
-
-import java.text.ParseException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
+
+import java.text.ParseException;
 
 
 /**

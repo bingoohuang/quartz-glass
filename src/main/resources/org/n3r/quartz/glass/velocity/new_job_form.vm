@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    #parse("org/n3r/quartz/glass/velocity/widgets/head.vm")
+</head>
+<body>
+    #parse("org/n3r/quartz/glass/velocity/widgets/menu.vm")
+
+<h1><span>Create job</span></h1>
+
+<div class="table">
+    <form id="jobActionForm" action="$root/jobs/new" method="POST">
+        <table>
+            #springBind("form.group")
+            <tr>
+                <td>group</td>
+                <td>
+                    <input type="text" name="group" value="$!format.html($status.value)"/>
+                    #if(${status.error}) <span class="error">${status.errorMessage}</span> #end
+                </td>
+            </tr>
+            #springBind("form.name")
+            <tr>
+                <td>name</td>
+                <td>
+                    <input type="text" name="name" value="$!format.html($status.value)"/>
+                    <span id="nameProposal"></span>
+                    #if(${status.error}) <span class="error">${status.errorMessage}</span> #end
+                </td>
+            </tr>
+            #springBind("form.clazz")
+            <tr>
+                <td>class</td>
+                <td>
+                    <select id="clazz" name="clazz" onchange="javascript:onJobSelected();">
+                        <option label="------------------------------" value="">------------------------------</option>
+                        #foreach ($value in $jobClasses)
+                            #if ("$value" == "$status.value")
+                                <option label="$value.name" value="$value.name" selected="selected">$value.name</option>
+                            #else
+                                <option label="$value.name" value="$value.name">$value.name</option>
+                            #end
+                        #end
+                    </select>
+                    #if(${status.error}) <span class="error">${status.errorMessage}</span> #end
+                </td>
+            </tr>
+            <tr>
+                <td>description</td>
+                <td id="description">$!format.html($jobBean.description)</td>
+            </tr>
+            <tr>
+                <td>Disallow concurrent execution</td>
+                <td id="disallowConcurrentExecution">$jobBean.disallowConcurrentExecution</td>
+            </tr>
+            <tr>
+                <td>Persist job data after execution</td>
+                <td id="persistJobDataAfterExecution">$jobBean.persistJobDataAfterExecution</td>
+            </tr>
+            #springBind("form.dataMap")
+            <tr>
+                <td valign="top">data map</td>
+                <td><textarea name="dataMap" rows="20" cols="100">$!format.html($status.value)</textarea></td>
+            </tr>
+        </table>
+        <input type="submit" value="create job"/>
+    </form>
+    <script type="text/javascript">proposeJobName('$!form.clazz')</script>
+</div>
+
+    #parse("org/n3r/quartz/glass/velocity/widgets/args.vm")
+
+    #parse("org/n3r/quartz/glass/velocity/widgets/footer.vm")
+
+</body>
+</html>

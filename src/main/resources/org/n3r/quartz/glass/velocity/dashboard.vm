@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    #parse("org/n3r/quartz/glass/velocity/widgets/head.vm")
+</head>
+<body>
+    #parse("org/n3r/quartz/glass/velocity/widgets/menu.vm")
+
+<h2><span>Hanged triggers</span></h2>
+
+<div class="table">
+    #if ($hangedTriggers.size() > 0)
+        <table class="table">
+            <thead>
+            <tr>
+                <th>Job group / name</th>
+                <th>Trigger group / name</th>
+                <th>Previous firetime</th>
+                <th>Next firetime</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+                #foreach ($trigger in $hangedTriggers)
+                <tr>
+                    <td>${trigger.jobGroup} / ${trigger.jobName}</td>
+                    <td>${trigger.group} / ${trigger.name}</td>
+                    <td>$format.date($trigger.previousFireTime)</td>
+                    <td>$format.date($trigger.nextFireTime)</td>
+                    <td nowrap="nowrap">
+                        <a onclick="javascript:return(confirm('Are you sure you want to restart trigger ?'));"
+                           href="$root/restartTrigger?group=$format.html($trigger.group)&amp;name=$format.html($trigger.name)">
+                            <img alt="restart" src="$root/image/restart.png"/>
+                        </a>
+                    </td>
+                </tr>
+                #end
+            </tbody>
+        </table>
+    #else
+        none
+    #end
+</div>
+
+<h2><span>Running jobs</span></h2>
+
+<div class="table">
+    #if ($runningJobs.size() > 0)
+        <table>
+            <thead>
+            <tr>
+                <th>Job group / name</th>
+                <th>Class</th>
+                <th>FireTime</th>
+                <th>Duration</th>
+                <th>Planification</th>
+                <th>Stop</th>
+            </tr>
+            </thead>
+            <tbody>
+                #foreach ($jobContext in $runningJobs)
+                <tr>
+                    <td>
+                        <a href="$root/jobs/$format.html($jobContext.jobDetail.group)/$format.html($jobContext.jobDetail.name)">${jobContext.jobDetail.group}
+                            / ${jobContext.jobDetail.name}</a></td>
+                    <td>${jobContext.jobDetail.jobClass}</td>
+                    <td style="text-align: center">$format.date($jobContext.fireTime)</td>
+                    <td style="text-align: center">$utils.duration($jobContext)</td>
+                    <td style="text-align: center">$utils.planification($jobContext.trigger)</td>
+                    <td style="text-align: center">
+                        #if ($utils.isInterruptible($jobContext.jobDetail))
+                            <a href="$root/interrupt?group=$format.html($jobContext.jobDetail.group)&amp;name=$format.html($jobContext.jobDetail.name)">
+                                <img src="$root/image/stop.png" alt="stop">
+                            </a>
+                        #end
+                    </td>
+                </tr>
+                #end
+            </tbody>
+        </table>
+    #else
+        none
+    #end
+</div>
+
+<h2><span>Paused triggers</span></h2>
+
+<div class="table">
+    #if ($pausedTriggers.size() > 0)
+        <table>
+            <thead>
+            <tr>
+                <th>Job group</th>
+                <th>Job name</th>
+                <th>Group</th>
+                <th>Name</th>
+                <th>Next firetime</th>
+            </tr>
+            </thead>
+            <tbody>
+                #foreach ($trigger in $pausedTriggers)
+                <tr>
+                    <td>${trigger.jobGroup}</td>
+                    <td>${trigger.jobName}</td>
+                    <td>${trigger.group}</td>
+                    <td>${trigger.name}</td>
+                    <td>$format.date($trigger.nextFireTime)</td>
+                </tr>
+                #end
+            </tbody>
+        </table>
+    #else
+        none
+    #end
+</div>
+
+    #parse("org/n3r/quartz/glass/velocity/widgets/footer.vm")
+
+</body>
+</html>

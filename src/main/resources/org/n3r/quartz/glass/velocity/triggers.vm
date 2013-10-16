@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    #parse("org/n3r/quartz/glass/velocity/widgets/head.vm")
+</head>
+<body>
+    #parse("org/n3r/quartz/glass/velocity/widgets/menu.vm")
+
+<h1><span>Defined triggers</span></h1>
+
+<div class="table">
+    <table>
+        <thead>
+        <tr>
+            <th>Type</th>
+            <th>Job Group / name</th>
+            <th>Trigger Group / name</th>
+            <th>Start time</th>
+            <th>End time</th>
+            <th>Last fire time</th>
+            <th>Next fire time</th>
+            <th>planification</th>
+            <th>Pause / Resume</th>
+            <th>Delete</th>
+        </tr>
+        </thead>
+        <tbody>
+            #foreach ($jobAndTriggers in $jobsAndTriggers)
+                #set ($job = $jobAndTriggers.jobDetail)
+                #foreach ($trigger in $jobAndTriggers.triggers)
+                <tr>
+                    <td style="text-align: center;">$format.html($trigger.type)</td>
+                    <td style="text-align: center;"><a
+                            href="$root/jobs/$format.html($job.group)/$format.html($job.name)">$format.html($job.group)
+                        / $format.html($job.name)</a></td>
+                    <td style="text-align: center;">$format.html($trigger.group) / $format.html($trigger.name)</td>
+                    <td style="text-align: center;">
+                        $format.date($trigger.startTime)
+                        #if ($trigger.running) &nbsp;<span style="color: red;">running</span> #end
+                    </td>
+                    <td style="text-align: center;">$format.date($trigger.endTime)</td>
+                    <td style="text-align: center;">$format.date($trigger.previousFireTime)</td>
+                    <td style="text-align: center;">$format.date($trigger.nextFireTime)</td>
+                    <td style="text-align: center;">$format.html($trigger.planification)</td>
+                    <td style="text-align: center;">
+                        #if ($trigger.paused)
+                            <a onclick="javascript:return(confirm('Are you sure you want to resume ?'));"
+                               href="$root/jobs/$format.html($job.group)/$format.html($job.name)/triggers/$format.html($trigger.group)/$format.html($trigger.name)/resume?redirect=$current"
+                               title="resume">
+                                <img alt="delete" src="$root/image/start.png"/>
+                            </a>
+                        #else
+                            <a onclick="javascript:return(confirm('Are you sure you want to pause ?'));"
+                               href="$root/jobs/$format.html($job.group)/$format.html($job.name)/triggers/$format.html($trigger.group)/$format.html($trigger.name)/pause?redirect=$current"
+                               title="pause">
+                                <img alt="delete" src="$root/image/pause.png"/>
+                            </a>
+                        #end
+                    </td>
+                    <td style="text-align: center;">
+                        <a onclick="javascript:return(confirm('Are you sure you want to delete ?'));"
+                           href="$root/jobs/$format.html($job.group)/$format.html($job.name)/triggers/$format.html($trigger.group)/$format.html($trigger.name)/delete?redirect=$current"
+                           title="delete">
+                            <img alt="delete" src="$root/image/delete.png"/>
+                        </a>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="9">
+                        <span class="code">$format.dataMap($trigger.dataMap)</span>
+                    </td>
+                </tr>
+                #end
+            #end
+        </tbody>
+    </table>
+</div>
+
+    #parse("org/n3r/quartz/glass/velocity/widgets/footer.vm")
+</body>
+</html>

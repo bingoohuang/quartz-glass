@@ -1,0 +1,35 @@
+<h2><span>Jobs arguments</span></h2>
+<div class="table">
+    <table>
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Sample Values</th>
+        </tr>
+        </thead>
+        <tbody id="arguments">
+        #* If you change this code don't forget to change the javascript part also *#
+            #foreach ($argument in $jobArguments)
+            <tr>
+                <td style="text-align: center">
+                    #if ($argument.required)
+                        <span style="font-weight:bold;">
+                                $format.html($argument.name)*
+                            </span>
+                    #else
+                        $format.html($argument.name)
+                    #end
+                </td>
+                <td>$format.html($argument.description)</td>
+                <td>
+                    #foreach ($sampleValue in $argument.sampleValues)
+                        $format.html($sampleValue)<br>
+                        </c:forEach>
+                    #end
+                    </c:if></td>
+            </tr>
+            #end
+        </tbody>
+    </table>
+</div>

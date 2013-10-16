@@ -1,6 +1,3 @@
-/**
- *
- */
 package net.redhogs.cronparser;
 
 import org.junit.Assert;

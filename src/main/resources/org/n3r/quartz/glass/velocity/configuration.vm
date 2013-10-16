@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    #parse("org/n3r/quartz/glass/velocity/widgets/head.vm")
+</head>
+<body>
+    #parse("org/n3r/quartz/glass/velocity/widgets/menu.vm")
+
+<h2><span>Configuration</span></h2>
+
+<div class="table">
+    <table>
+        <colgroup>
+            <col class="medium">
+            <col>
+        </colgroup>
+        <thead>
+        <tr>
+            <th>Key</th>
+            <th>Value</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>store</td>
+            <td>${configuration.store}</td>
+        </tr>
+        <tr>
+            <td>log store</td>
+            <td>${configuration.logStore}</td>
+        </tr>
+        <tr>
+            <td>table prefix</td>
+            <td>${configuration.tablePrefix}</td>
+        </tr>
+        <tr>
+            <td>job base package</td>
+            <td>${configuration.jobBasePackage}</td>
+        </tr>
+        <tr>
+            <td>job injection type</td>
+            <td>${configuration.injectionType}</td>
+        </tr>
+        <tr>
+            <td>job date format</td>
+            <td>${configuration.dateFormat}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+    #parse("org/n3r/quartz/glass/velocity/widgets/footer.vm")
+
+</body>
+</html>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+<Context swallowOutput="true" useHttpOnly="true">
+
+    <Parameter name="glass/store" value="MEMORY"/>
+    <Parameter name="glass/job.injectionType" value="FIELD"/>
+
+</Context>

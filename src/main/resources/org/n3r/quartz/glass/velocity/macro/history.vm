@@ -1,0 +1,55 @@
+#macro (history $heading $title $items)
+<$heading><span>$title</span></$heading>
+<div class="table">
+    <table>
+        <thead>
+        <tr>
+            <th>Job group / name</th>
+            <th>Trigger group / name</th>
+            <th>Start</th>
+            <th>End</th>
+            <th>Job class</th>
+        </tr>
+        </thead>
+        <tbody>
+            #foreach ($log in $items)
+            <tr>
+                <td style="text-align: center">
+                    <a class="${log.result}" href="$root/jobs/$format.html($log.jobGroup)/$format.html($log.jobName)">
+                        <span>$format.html($log.jobGroup) / $format.html($log.jobName)</span>
+                    </a>
+                </td>
+                <td style="text-align: center">$!format.html($log.triggerGroup) / $!format.html($log.triggerName)</td>
+                <td style="text-align: center;">$!format.date(${log.startDate})</td>
+                <td style="text-align: center;">
+                    #if ($log.ended)
+                        $!format.date(${log.endDate})
+                        #if ($log.result == 'ERROR')
+                            <span style="color: red;">failed</span>
+                        #end
+                    #else
+                        <span style="color: red;">running</span>
+                    #end
+                </td>
+                <td>$!log.jobClass</td>
+            </tr>
+            <tr>
+                <td colspan="7">
+                    <div class="innertab-title">arguments</div>
+                    <div class="code innertab-content">$!format.dataMap($log.dataMap)</div>
+                    <div class="innertab-title">logs</div>
+                    <div class="innertab-content">
+                        <a href="#logs-${log.id}-link" id="logs-${log.id}-link"
+                           onclick="showLogs('$log.id');return false;">view logs</a>
+
+                        <div id="logs-$log.id" style="display:none">
+                            reading logs...
+                        </div>
+                    </div>
+                </td>
+            </tr>
+            #end
+        </tbody>
+    </table>
+</div>
+#end

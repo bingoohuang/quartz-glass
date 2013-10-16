@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+
+    #parse("org/n3r/quartz/glass/velocity/macro/macros.vm")
+
+<html>
+<head>
+    #parse("org/n3r/quartz/glass/velocity/widgets/head.vm")
+</head>
+<body>
+    #parse("org/n3r/quartz/glass/velocity/widgets/pages.vm")
+
+    #foreach ($jobLog in $page.items)
+        $jobLog.formattedDate <span class="$jobLog.level">$jobLog.level</span> $jobLog.message
+
+        #if ($jobLog.stackTrace)
+        <a href="#" onclick="viewStackTrace($jobLog.executionId, $velocityCount);return false;">view stacktrace</a>
+        <span id="logs-${jobLog.executionId}-${velocityCount}-stacktrace"
+              style="display:none;">$jobLog.formattedStackTrace</span>
+        #end
+
+    <br>
+    #end
+</body>
+</html>
