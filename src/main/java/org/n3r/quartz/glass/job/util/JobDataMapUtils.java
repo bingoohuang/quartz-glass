@@ -10,24 +10,19 @@ import java.util.Properties;
 public class JobDataMapUtils {
 
     public static String toProperties(JobDataMap jobDataMap, String separator) {
-        String[] keys = jobDataMap.getKeys();
+        StringBuilder str = new StringBuilder();
 
-        StringBuilder stringBuilder = new StringBuilder();
+        for (String key : jobDataMap.getKeys()) {
+            if (str.length() > 0) str.append(separator);
 
-        for (String key : keys) {
-            stringBuilder.append(key);
-            stringBuilder.append("=");
-            stringBuilder.append(jobDataMap.getString(key));
-            stringBuilder.append(separator);
+            str.append(key).append("=").append(jobDataMap.getString(key));
         }
 
-        return stringBuilder.toString();
+        return str.toString();
     }
 
     public static JobDataMap fromProperties(String dataMap) {
-        if (StringUtils.isEmpty(dataMap)) {
-            return new JobDataMap();
-        }
+        if (StringUtils.isEmpty(dataMap)) return new JobDataMap();
 
         Properties props = new Properties();
 

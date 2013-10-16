@@ -22,7 +22,7 @@
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>classpath:org/n3r/quartz/glass/springConfig.xml</param-value>
+            <param-value>classpath:org/n3r/quartz/glass/springConfig.xml, classpath*:spring*.xml</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>

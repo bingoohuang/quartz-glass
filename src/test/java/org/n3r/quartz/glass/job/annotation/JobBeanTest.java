@@ -4,9 +4,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.n3r.quartz.glass.job.demo.DummyJob;
 
-/**
- * @author damien bourdette
- */
 public class JobBeanTest {
     @Test
     public void getDescription() {

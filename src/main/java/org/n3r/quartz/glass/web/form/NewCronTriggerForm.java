@@ -9,9 +9,6 @@ import org.quartz.TriggerBuilder;
 
 import java.text.ParseException;
 
-/**
- * @author damien bourdette
- */
 public class NewCronTriggerForm extends CronTriggerForm {
     private String group;
 
@@ -36,8 +33,12 @@ public class NewCronTriggerForm extends CronTriggerForm {
     public Trigger getTrigger() throws ParseException {
         fixParameters();
 
-        return TriggerBuilder.newTrigger().forJob(name.trim(), group.trim()).withIdentity(triggerName.trim(), triggerGroup.trim())
-                .withSchedule(CronScheduleBuilder.cronSchedule(cronExpression).withMisfireHandlingInstructionIgnoreMisfires())
+        return TriggerBuilder.newTrigger()
+                .forJob(name.trim(), group.trim())
+                .withIdentity(triggerName.trim(), triggerGroup.trim())
+                .withSchedule(CronScheduleBuilder
+                        .cronSchedule(cronExpression)
+                        .withMisfireHandlingInstructionIgnoreMisfires())
                 .startAt(startTime).endAt(endTime)
                 .usingJobData(JobDataMapUtils.fromProperties(dataMap))
                 .build();

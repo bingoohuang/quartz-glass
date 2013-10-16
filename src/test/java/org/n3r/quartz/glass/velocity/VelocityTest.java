@@ -12,9 +12,6 @@ import org.n3r.quartz.glass.SpringConfig;
 import java.io.IOException;
 import java.io.StringWriter;
 
-/**
- * @author damien bourdette
- */
 public class VelocityTest {
 
     private VelocityEngine velocityEngine;

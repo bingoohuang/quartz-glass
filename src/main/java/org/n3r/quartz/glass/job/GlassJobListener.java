@@ -1,7 +1,7 @@
 package org.n3r.quartz.glass.job;
 
 import org.apache.commons.lang3.StringUtils;
-import org.n3r.quartz.glass.job.annotation.Job;
+import org.n3r.quartz.glass.job.annotation.GlassJob;
 import org.n3r.quartz.glass.job.annotation.JobArgumentBean;
 import org.n3r.quartz.glass.job.util.CurrentJobExecutionContext;
 import org.n3r.quartz.glass.log.execution.CurrentJobExecution;
@@ -14,9 +14,6 @@ import org.quartz.listeners.JobListenerSupport;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-/**
- * @author damien bourdette
- */
 @Component
 public class GlassJobListener extends JobListenerSupport {
     @Autowired
@@ -60,7 +57,7 @@ public class GlassJobListener extends JobListenerSupport {
 
         if (StringUtils.isNotEmpty(level)) return level;
 
-        Job annotation = context.getJobDetail().getJobClass().getAnnotation(Job.class);
+        GlassJob annotation = context.getJobDetail().getJobClass().getAnnotation(GlassJob.class);
 
         if (annotation != null) return annotation.logLevel().name();
 

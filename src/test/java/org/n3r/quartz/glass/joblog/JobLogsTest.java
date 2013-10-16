@@ -9,9 +9,6 @@ import org.n3r.quartz.glass.util.Query;
 
 import static junit.framework.Assert.assertEquals;
 
-/**
- * @author damien bourdette
- */
 public class JobLogsTest {
     private MemoryJobLogStore store = new MemoryJobLogStore();
 

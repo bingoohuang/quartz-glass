@@ -1,6 +1,6 @@
 package org.n3r.quartz.glass.job.demo;
 
-import org.n3r.quartz.glass.job.annotation.Job;
+import org.n3r.quartz.glass.job.annotation.GlassJob;
 import org.n3r.quartz.glass.job.annotation.JobArgument;
 import org.n3r.quartz.glass.log.joblog.JobLogLevel;
 import org.n3r.quartz.glass.log.joblog.JobLogs;
@@ -9,7 +9,8 @@ import org.quartz.*;
 /**
  * A dummy quartz job for testing purposes.
  */
-@Job(description = "Dummy job for testing purposes", logLevel = JobLogLevel.INFO)
+@GlassJob(description = "演示JOB", logLevel = JobLogLevel.INFO,
+    team= "火箭队", created = "2013-10-16")
 @DisallowConcurrentExecution
 public class DummyJob implements InterruptableJob {
 

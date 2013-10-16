@@ -19,9 +19,6 @@ import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 
-/**
- * @author damien bourdette
- */
 public class JdbcJobExecutions implements JobExecutions {
     private static final String TABLE_SUFFIX = "job_execution";
 

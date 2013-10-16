@@ -4,9 +4,6 @@ import org.quartz.Trigger;
 
 import java.text.ParseException;
 
-/**
- * @author damien bourdette
- */
 public interface TriggerForm {
     public Trigger getTrigger(Trigger trigger) throws ParseException;
 }

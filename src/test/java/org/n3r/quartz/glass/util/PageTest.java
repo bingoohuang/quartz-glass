@@ -6,9 +6,6 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author damien bourdette
- */
 public class PageTest {
     @Test
     public void count() {

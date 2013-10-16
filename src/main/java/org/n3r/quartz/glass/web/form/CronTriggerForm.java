@@ -11,9 +11,6 @@ import org.quartz.TriggerBuilder;
 
 import java.text.ParseException;
 
-/**
- * @author damien bourdette
- */
 public class CronTriggerForm extends TriggerFormSupport implements TriggerForm {
     @NotEmpty
     protected String cronExpression;

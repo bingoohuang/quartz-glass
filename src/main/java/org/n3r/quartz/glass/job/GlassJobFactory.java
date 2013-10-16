@@ -19,9 +19,6 @@ import org.springframework.stereotype.Component;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * @author damien bourdette
- */
 @Component
 public class GlassJobFactory implements JobFactory {
     @Autowired

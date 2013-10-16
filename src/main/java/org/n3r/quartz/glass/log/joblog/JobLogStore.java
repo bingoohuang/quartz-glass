@@ -3,9 +3,6 @@ package org.n3r.quartz.glass.log.joblog;
 import org.n3r.quartz.glass.util.Page;
 import org.n3r.quartz.glass.util.Query;
 
-/**
- * @author damien bourdette
- */
 public interface JobLogStore {
     public void add(JobLog jobLog);
 

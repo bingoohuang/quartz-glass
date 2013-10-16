@@ -4,8 +4,8 @@
     <table>
         <thead>
         <tr>
-            <th>Job group / name</th>
-            <th>Trigger group / name</th>
+            <th>JobKey</th>
+            <th>TriggerKey</th>
             <th>Start</th>
             <th>End</th>
             <th>Job class</th>
@@ -16,10 +16,10 @@
             <tr>
                 <td style="text-align: center">
                     <a class="${log.result}" href="$root/jobs/$format.html($log.jobGroup)/$format.html($log.jobName)">
-                        <span>$format.html($log.jobGroup) / $format.html($log.jobName)</span>
+                        <span>$format.html($log.jobKey)</span>
                     </a>
                 </td>
-                <td style="text-align: center">$!format.html($log.triggerGroup) / $!format.html($log.triggerName)</td>
+                <td style="text-align: center">$!format.html($log.triggerKey)</td>
                 <td style="text-align: center;">$!format.date(${log.startDate})</td>
                 <td style="text-align: center;">
                     #if ($log.ended)

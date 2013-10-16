@@ -9,9 +9,6 @@ import org.quartz.TriggerBuilder;
 
 import java.text.ParseException;
 
-/**
- * @author damien bourdette
- */
 public class NewSimpleTriggerForm extends SimpleTriggerForm {
     private String group;
 

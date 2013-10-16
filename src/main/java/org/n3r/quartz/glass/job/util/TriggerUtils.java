@@ -1,18 +1,24 @@
 package org.n3r.quartz.glass.job.util;
 
+import net.redhogs.cronparser.CronExpressionDescriptor;
 import org.quartz.CronTrigger;
 import org.quartz.SimpleTrigger;
 import org.quartz.Trigger;
 
-/**
- * @author damien bourdette
- */
+import java.text.ParseException;
+import java.util.concurrent.TimeUnit;
+
 public class TriggerUtils {
     public static String getPlanification(Trigger trigger) {
         if (trigger instanceof CronTrigger) {
             CronTrigger cronTrigger = (CronTrigger) trigger;
 
-            return cronTrigger.getCronExpression();
+            try {
+                return CronExpressionDescriptor.getDescription(cronTrigger.getCronExpression())
+                        + "<br/>(" + cronTrigger.getCronExpression() + ")";
+            } catch (ParseException e) {
+                return cronTrigger.getCronExpression();
+            }
         }
 
         SimpleTrigger simpleTrigger = (SimpleTrigger) trigger;
@@ -35,8 +41,34 @@ public class TriggerUtils {
             planification += "repeat " + repeatCount + " times every ";
         }
 
-        planification += repeatInterval + "ms";
+        planification += getDurationBreakdown(repeatInterval);
 
         return planification;
+    }
+
+    /**
+     * Convert a millisecond duration to a string format
+     *
+     * @param millis A duration to convert to a string form
+     * @return A string of the form "X Days Y Hours Z Minutes A Seconds".
+     */
+    public static String getDurationBreakdown(long millis) {
+        long days = TimeUnit.MILLISECONDS.toDays(millis);
+        millis -= TimeUnit.DAYS.toMillis(days);
+        long hours = TimeUnit.MILLISECONDS.toHours(millis);
+        millis -= TimeUnit.HOURS.toMillis(hours);
+        long minutes = TimeUnit.MILLISECONDS.toMinutes(millis);
+        millis -= TimeUnit.MINUTES.toMillis(minutes);
+        long seconds = TimeUnit.MILLISECONDS.toSeconds(millis);
+        millis -= TimeUnit.MILLISECONDS.toMillis(minutes);
+
+        StringBuilder sb = new StringBuilder(64);
+        if (days > 0) sb.append(days).append(" days ");
+        if (hours > 0) sb.append(hours).append(" hours ");
+        if (minutes > 0) sb.append(minutes).append(" minutes ");
+        if (seconds > 0) sb.append(seconds).append(" seconds ");
+        if (millis > 0) sb.append(millis).append(" millis");
+
+        return sb.toString().trim();
     }
 }

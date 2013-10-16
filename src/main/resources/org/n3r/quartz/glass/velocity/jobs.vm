@@ -13,8 +13,12 @@
     <table>
         <thead>
         <tr>
-            <th>Group / name</th>
+            <th>Jobkey</th>
             <th>Class</th>
+            <th>Desc</th>
+            <th>Team</th>
+            <th>Created</th>
+            <th>JobDataMap</th>
             <th>Delete</th>
         </tr>
         </thead>
@@ -22,9 +26,12 @@
             #foreach ($job in $jobs)
             <tr>
                 <td style="text-align: center;"><a
-                        href="$root/jobs/$format.html($job.group)/$format.html($job.name)">$format.html($job.group)
-                    / $format.html($job.name)</a></td>
-                <td style="text-align: center;">${job.jobClass.name}</td>
+                        href="$root/jobs/$format.html($job.group)/$format.html($job.name)">$format.html($job.jobKey)</a></td>
+                <td style="text-align: center;">${job.jobClass}</td>
+                <td style="text-align: center;">$format.html(${job.jobDesc})</td>
+                <td style="text-align: center;">$format.html(${job.jobTeam})</td>
+                <td style="text-align: center;">$format.html(${job.jobCreated})</td>
+                <td style="text-align: center;">$format.html(${job.jobDataMap})</td>
                 <td style="text-align: center;">
                     <a onclick="javascript:return(confirm('Are you sure you want to delete ?'));"
                        href="$root/jobs/$format.html($job.group)/$format.html($job.name)/delete">

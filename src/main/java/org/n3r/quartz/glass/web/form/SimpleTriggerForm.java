@@ -11,9 +11,6 @@ import org.quartz.TriggerBuilder;
 import javax.validation.constraints.Min;
 import java.text.ParseException;
 
-/**
- * @author damien bourdette
- */
 public class SimpleTriggerForm extends TriggerFormSupport implements TriggerForm {
     @Min(-1)
     protected Integer repeatCount;

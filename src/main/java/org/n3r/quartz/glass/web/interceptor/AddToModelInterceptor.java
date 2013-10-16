@@ -15,9 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.net.URLEncoder;
 
-/**
- * @author damien bourdette
- */
 public class AddToModelInterceptor extends HandlerInterceptorAdapter {
     @Autowired
     private Scheduler quartzScheduler;

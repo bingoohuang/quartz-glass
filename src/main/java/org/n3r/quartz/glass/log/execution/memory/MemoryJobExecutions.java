@@ -11,9 +11,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-/**
- * @author damien bourdette
- */
 public class MemoryJobExecutions implements JobExecutions {
     private final List<JobExecution> executions = new ArrayList<JobExecution>();
 

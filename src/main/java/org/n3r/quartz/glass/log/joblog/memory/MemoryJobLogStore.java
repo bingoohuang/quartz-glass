@@ -8,9 +8,6 @@ import org.n3r.quartz.glass.util.Query;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author damien bourdette
- */
 public class MemoryJobLogStore implements JobLogStore {
     private List<JobLog> jobLogs = new ArrayList<JobLog>();
 

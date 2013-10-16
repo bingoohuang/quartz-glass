@@ -2,7 +2,11 @@ package org.n3r.quartz.glass.log.execution;
 
 import org.n3r.quartz.glass.job.util.JobDataMapUtils;
 import org.n3r.quartz.glass.util.Dates;
+import org.n3r.quartz.glass.util.Keys;
 import org.quartz.JobExecutionContext;
+import org.quartz.JobKey;
+import org.quartz.Scheduler;
+import org.quartz.TriggerKey;
 
 import java.util.Date;
 
@@ -21,6 +25,9 @@ public class JobExecution {
     private Date endDate;
 
     private boolean ended;
+
+    private String jobKey;
+    private String triggerKey;
 
     private String jobGroup;
 
@@ -46,17 +53,20 @@ public class JobExecution {
     public void fillWithContext(JobExecutionContext context) {
         startDate = context.getFireTime();
         jobClass = context.getJobDetail().getJobClass().getName();
-        jobGroup = context.getJobDetail().getKey().getGroup();
-        jobName = context.getJobDetail().getKey().getName();
-        triggerGroup = context.getTrigger().getKey().getGroup();
-        triggerName = context.getTrigger().getKey().getName();
+
+        JobKey key = context.getJobDetail().getKey();
+        jobKey = Keys.desc(key);
+        jobGroup = key.getGroup();
+        jobName = key.getName();
+        TriggerKey key2 = context.getTrigger().getKey();
+        triggerKey = Keys.desc(key2);
+        triggerGroup = key2.getGroup();
+        triggerName = key2.getName();
         dataMap = JobDataMapUtils.toProperties(context.getMergedJobDataMap(), "\n");
     }
 
     public void warn() {
-        if (this.result == JobExecutionResult.ERROR) {
-            return;
-        }
+        if (this.result == JobExecutionResult.ERROR) return;
 
         result = JobExecutionResult.WARN;
     }
@@ -70,9 +80,7 @@ public class JobExecution {
     }
 
     public void setResult(JobExecutionResult result) {
-        if (result == null) {
-            result = JobExecutionResult.SUCCESS;
-        }
+        if (result == null) result = JobExecutionResult.SUCCESS;
 
         this.result = result;
     }
@@ -172,5 +180,21 @@ public class JobExecution {
                 ", dataMap='" + dataMap + '\'' +
                 ", result=" + result +
                 '}';
+    }
+
+    public String getTriggerKey() {
+        return triggerKey;
+    }
+
+    public void setTriggerKey(String triggerKey) {
+        this.triggerKey = triggerKey;
+    }
+
+    public String getJobKey() {
+        return jobKey;
+    }
+
+    public void setJobKey(String jobKey) {
+        this.jobKey = jobKey;
     }
 }

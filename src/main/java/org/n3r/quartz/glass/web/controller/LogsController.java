@@ -11,9 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-/**
- * @author damien bourdette
- */
 @Controller
 public class LogsController {
     public static final int PAGE_SIZE = 100;

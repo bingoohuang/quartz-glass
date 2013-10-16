@@ -10,7 +10,7 @@ import java.lang.annotation.Target;
 public @interface JobArgument {
 
     /**
-     * Whether the parameter is required in Job Configuration Map
+     * Whether the parameter is required in GlassJob Configuration Map
      */
     boolean required() default false;
 

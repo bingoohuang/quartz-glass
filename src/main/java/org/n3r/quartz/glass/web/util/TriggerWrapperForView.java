@@ -3,32 +3,23 @@ package org.n3r.quartz.glass.web.util;
 import org.n3r.quartz.glass.job.util.JobDataMapUtils;
 import org.n3r.quartz.glass.job.util.TriggerUtils;
 import org.n3r.quartz.glass.util.Dates;
+import org.n3r.quartz.glass.util.Keys;
 import org.quartz.*;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * @author damien bourdette
- */
 public class TriggerWrapperForView {
+    private String triggerKey;
     private String group;
-
     private String name;
-
     private Date startTime;
-
     private Date endTime;
-
     private String cronExpression;
-
     private String dataMap;
-
     private Trigger trigger;
-
     private boolean running;
-
     private boolean paused;
 
     public static List<TriggerWrapperForView> fromList(List<? extends Trigger> triggers, Scheduler scheduler) throws SchedulerException {
@@ -49,6 +40,7 @@ public class TriggerWrapperForView {
         wrapper.trigger = trigger;
         wrapper.group = trigger.getKey().getGroup();
         wrapper.name = trigger.getKey().getName();
+        wrapper.triggerKey = Keys.desc(trigger.getKey());
         wrapper.startTime = trigger.getStartTime();
         wrapper.endTime = trigger.getEndTime();
         wrapper.paused = scheduler.getTriggerState(trigger.getKey()) == Trigger.TriggerState.PAUSED;
@@ -63,7 +55,6 @@ public class TriggerWrapperForView {
         for (JobExecutionContext executionContext : runningJobs) {
             if (executionContext.getTrigger().equals(trigger)) {
                 wrapper.running = true;
-
                 break;
             }
         }
@@ -117,5 +108,9 @@ public class TriggerWrapperForView {
 
     public boolean isPaused() {
         return paused;
+    }
+
+    public String getTriggerKey() {
+        return triggerKey;
     }
 }

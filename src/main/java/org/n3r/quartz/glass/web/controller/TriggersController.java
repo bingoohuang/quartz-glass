@@ -22,9 +22,6 @@ import java.util.Set;
 
 import static org.quartz.impl.matchers.GroupMatcher.groupEquals;
 
-/**
- * @author damien bourdette
- */
 @Controller
 public class TriggersController {
     @Autowired
@@ -71,7 +68,8 @@ public class TriggersController {
     }
 
     @RequestMapping(value = "/jobs/{group}/{name}/triggers/new-cron", method = RequestMethod.POST)
-    public String postCreateCronTrigger(@PathVariable String group, @PathVariable String name, @Valid @ModelAttribute("form") NewCronTriggerForm form, BindingResult result, Model model) throws SchedulerException, ParseException {
+    public String postCreateCronTrigger(@PathVariable String group, @PathVariable String name,
+                                        @Valid @ModelAttribute("form") NewCronTriggerForm form, BindingResult result, Model model) throws SchedulerException, ParseException {
         JobDetail job = quartzScheduler.getJobDetail(new JobKey(name, group));
 
         if (job == null) return "redirect:" + configuration.getRoot() + "/jobs";

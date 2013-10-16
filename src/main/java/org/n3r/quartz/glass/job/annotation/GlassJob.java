@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
-public @interface Job {
+public @interface GlassJob {
 
     /**
      * User friendly description of job
@@ -21,4 +21,13 @@ public @interface Job {
      */
     JobLogLevel logLevel() default JobLogLevel.WARN;
 
+    /**
+     * dev team name
+     */
+    String team() default "";
+
+    /**
+     * Creat date info
+     */
+    String created() default "";
 }

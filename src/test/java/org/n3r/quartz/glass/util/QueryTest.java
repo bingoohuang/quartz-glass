@@ -7,9 +7,6 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author damien bourdette
- */
 public class QueryTest {
     private List<Long> longs = new ArrayList<Long>();
 

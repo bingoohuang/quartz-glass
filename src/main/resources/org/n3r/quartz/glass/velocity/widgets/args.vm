@@ -23,11 +23,8 @@
                 </td>
                 <td>$format.html($argument.description)</td>
                 <td>
-                    #foreach ($sampleValue in $argument.sampleValues)
-                        $format.html($sampleValue)<br>
-                        </c:forEach>
-                    #end
-                    </c:if></td>
+                    $format.html($argument.sampleValues)
+                </td>
             </tr>
             #end
         </tbody>

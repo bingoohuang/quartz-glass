@@ -7,9 +7,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-/**
- * @author damien bourdette
- */
 @Component
 public class GlassSchedulerListener extends SchedulerListenerSupport {
     private static final Logger LOGGER = LoggerFactory.getLogger(JobLogs.class);

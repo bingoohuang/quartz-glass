@@ -22,16 +22,24 @@
     <table>
         <tbody>
         <tr>
-            <td>Group</td>
-            <td>$format.html($job.group)</td>
-        </tr>
-        <tr>
-            <td>Name</td>
-            <td>$format.html($job.name)</td>
+            <td>JobKey</td>
+            <td>$format.html($job.jobKey)</td>
         </tr>
         <tr>
             <td>Class</td>
-            <td>$format.html($job.jobClass.name)</td>
+            <td>$format.html($job.jobClass)</td>
+        </tr>
+        <tr>
+            <td>Desc</td>
+            <td>$format.html($job.jobDesc)</td>
+        </tr>
+        <tr>
+            <td>Team</td>
+            <td>$format.html($job.jobTeam)</td>
+        </tr>
+        <tr>
+            <td>Created</td>
+            <td>$format.html($job.jobCreated)</td>
         </tr>
         <tr>
             <td>Disallow concurrent execution</td>
@@ -40,10 +48,6 @@
         <tr>
             <td>Persist job data after execution</td>
             <td>$jobBean.persistJobDataAfterExecution</td>
-        </tr>
-        <tr>
-            <td>Description</td>
-            <td>$format.html($jobBean.description)</td>
         </tr>
         <tr>
             <td>Data map</td>
@@ -68,7 +72,7 @@
         <thead>
         <tr>
             <th>Type</th>
-            <th>Group / name</th>
+            <th>TriggerKey</th>
             <th>Start time</th>
             <th>End time</th>
             <th>Last fire time</th>
@@ -83,8 +87,7 @@
             <tr>
                 <td style="text-align: center;">$format.html($trigger.type)</td>
                 <td>
-                    <a href="$root/jobs/$format.html($job.group)/$format.html($job.name)/triggers/$format.html($trigger.group)/$format.html($trigger.name)/edit">$format.html($trigger.group)
-                        / $format.html($trigger.name)</a></td>
+                    <a href="$root/jobs/$format.html($job.group)/$format.html($job.name)/triggers/$format.html($trigger.group)/$format.html($trigger.name)/edit">$format.html($trigger.triggerKey)</a> </td>
                 <td style="text-align: center;">
                     $format.date($trigger.startTime)
                     #if ($trigger.running) &nbsp;<span style="color: red;">running</span> #end

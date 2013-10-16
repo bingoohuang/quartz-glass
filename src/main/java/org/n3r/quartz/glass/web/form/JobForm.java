@@ -4,9 +4,6 @@ import org.n3r.quartz.glass.job.util.JobDataMapUtils;
 import org.quartz.JobBuilder;
 import org.quartz.JobDetail;
 
-/**
- * @author damien bourdette
- */
 public class JobForm {
     private String dataMap;
 

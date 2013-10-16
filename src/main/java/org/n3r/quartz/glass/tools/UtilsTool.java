@@ -10,9 +10,6 @@ import org.quartz.Trigger;
 
 import java.util.Date;
 
-/**
- * @author damien bourdette
- */
 public class UtilsTool {
     public boolean isInterruptible(JobDetail job) {
         return InterruptableJob.class.isAssignableFrom(job.getJobClass());
@@ -48,15 +45,11 @@ public class UtilsTool {
     }
 
     public void appendDuration(StringBuilder builder, int value, String unit) {
-        if (value != 0) {
-            builder.append(value + unit + " ");
-        }
+        if (value != 0) builder.append(value + unit + " ");
     }
 
     public String hash(Object object) {
-        if (object == null) {
-            return "";
-        }
+        if (object == null) return "";
 
         return object.getClass().getSimpleName() + "-" + System.identityHashCode(object);
     }

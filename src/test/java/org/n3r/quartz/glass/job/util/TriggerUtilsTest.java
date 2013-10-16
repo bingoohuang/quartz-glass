@@ -3,9 +3,6 @@ package org.n3r.quartz.glass.job.util;
 import org.junit.Assert;
 import org.junit.Test;
 
-/**
- * @author damien bourdette
- */
 public class TriggerUtilsTest {
     @Test
     public void getPlanification() {

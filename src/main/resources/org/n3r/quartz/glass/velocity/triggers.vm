@@ -14,8 +14,8 @@
         <thead>
         <tr>
             <th>Type</th>
-            <th>Job Group / name</th>
-            <th>Trigger Group / name</th>
+            <th>Job Key</th>
+            <th>Trigger Key</th>
             <th>Start time</th>
             <th>End time</th>
             <th>Last fire time</th>
@@ -32,9 +32,8 @@
                 <tr>
                     <td style="text-align: center;">$format.html($trigger.type)</td>
                     <td style="text-align: center;"><a
-                            href="$root/jobs/$format.html($job.group)/$format.html($job.name)">$format.html($job.group)
-                        / $format.html($job.name)</a></td>
-                    <td style="text-align: center;">$format.html($trigger.group) / $format.html($trigger.name)</td>
+                            href="$root/jobs/$format.html($job.group)/$format.html($job.name)">$format.descKey($job.key)</a></td>
+                    <td style="text-align: center;">$format.html($trigger.triggerKey)</td>
                     <td style="text-align: center;">
                         $format.date($trigger.startTime)
                         #if ($trigger.running) &nbsp;<span style="color: red;">running</span> #end
@@ -42,7 +41,7 @@
                     <td style="text-align: center;">$format.date($trigger.endTime)</td>
                     <td style="text-align: center;">$format.date($trigger.previousFireTime)</td>
                     <td style="text-align: center;">$format.date($trigger.nextFireTime)</td>
-                    <td style="text-align: center;">$format.html($trigger.planification)</td>
+                    <td style="text-align: center;">$trigger.planification</td>
                     <td style="text-align: center;">
                         #if ($trigger.paused)
                             <a onclick="javascript:return(confirm('Are you sure you want to resume ?'));"

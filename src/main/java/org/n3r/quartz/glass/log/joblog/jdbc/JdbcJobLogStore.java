@@ -16,9 +16,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-/**
- * @author damien bourdette
- */
 public class JdbcJobLogStore implements JobLogStore {
     private static final String TABLE_SUFFIX = "job_log";
 

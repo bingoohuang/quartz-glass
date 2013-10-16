@@ -7,9 +7,6 @@ import org.n3r.quartz.glass.job.demo.DummyJob;
 import org.n3r.quartz.glass.tools.UtilsTool;
 import org.quartz.impl.JobDetailImpl;
 
-/**
- * @author damien bourdette
- */
 public class UtilsToolTest {
 
     private UtilsTool utilsTool = new UtilsTool();

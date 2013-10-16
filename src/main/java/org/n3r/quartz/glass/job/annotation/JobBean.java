@@ -37,21 +37,19 @@ public class JobBean {
     }
 
     public static String getDescription(Class<?> jobClass) {
-        Job annotation = getAnnotation(jobClass, Job.class);
+        GlassJob annotation = getAnnotation(jobClass, GlassJob.class);
 
-        if (annotation == null) {
-            return "";
-        }
+        if (annotation == null) return "";
 
         return annotation.description();
     }
 
     public static boolean isDisallowConcurrentExecution(Class<?> jobClass) {
-        return getAnnotation(jobClass, DisallowConcurrentExecution.class) == null ? false : true;
+        return getAnnotation(jobClass, DisallowConcurrentExecution.class) != null;
     }
 
     public static boolean isPersistJobDataAfterExecution(Class<?> jobClass) {
-        return getAnnotation(jobClass, PersistJobDataAfterExecution.class) == null ? false : true;
+        return getAnnotation(jobClass, PersistJobDataAfterExecution.class) != null;
     }
 
     public String getDescription() {
@@ -67,9 +65,7 @@ public class JobBean {
     }
 
     private static <T extends Annotation> T getAnnotation(Class<?> jobClass, Class<T> annotationClass) {
-        if (jobClass == null) {
-            return null;
-        }
+        if (jobClass == null) return null;
 
         return jobClass.getAnnotation(annotationClass);
     }

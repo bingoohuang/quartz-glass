@@ -66,9 +66,7 @@ public class SpringConfig {
 
     @Bean
     public DataSource dataSource() throws Exception {
-        if (configuration().isInMemory()) {
-            return null;
-        }
+        if (configuration().isInMemory()) return null;
 
         JndiObjectFactoryBean factoryBean = new JndiObjectFactoryBean();
 

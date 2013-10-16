@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * Scans for classes which are @Job annotated.
+ * Scans for classes which are @GlassJob annotated.
  */
 @Component
 public class JobPathScanner {

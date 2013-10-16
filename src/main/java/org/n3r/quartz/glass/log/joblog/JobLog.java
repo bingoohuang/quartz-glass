@@ -9,9 +9,6 @@ import org.n3r.quartz.glass.util.Dates;
 
 import java.util.Date;
 
-/**
- * @author damien bourdette
- */
 public class JobLog {
     private Long executionId;
 
