@@ -5,6 +5,8 @@ A simple web ui for **quartz** and jobs simple definition on spring xml configur
 
 Thank to [olagache's glass](https://github.com/olagache/glass) and [RedHogs' cron-parser](https://github.com/RedHogs/cron-parser).
 
+This is a jar project by pom.xml defaultly and can be used in a web project like [quartz-glass-web](https://github.com/bingoohuang/quartz-glass-web).
+
 Through the quartz-glass ui, you can list all the jobs and relatives triggers.
 
 Jobs executions also displayed in job detail page.
@@ -122,7 +124,7 @@ public class PojoJob {
 | **At 03:00 to 2013-11-01**      |    Cron<br/>003?**| At 3:00:00 AM <br/>(0 0 3 ? * *)  |
 | **At ??:40 to 2013-11-01 18:00:00** |  Cron<br/>0 40 * * * ? | At 40 minutes past the hour <br/>(0 40 * * * ?) |
 
-## Deployment-web.xml
+## Deployment-web.xml please refer the detail [demo](https://github.com/bingoohuang/quartz-glass-web)
 ```xml
     <filter>
         <filter-name>charsetFilter</filter-name>
