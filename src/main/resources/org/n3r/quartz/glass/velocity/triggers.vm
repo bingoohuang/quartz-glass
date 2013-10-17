@@ -16,13 +16,14 @@
             <th>Type</th>
             <th>Job Key</th>
             <th>Trigger Key</th>
+            <th>Glass Scheduler</th>
             <th>Start time</th>
             <th>End time</th>
             <th>Last fire time</th>
             <th>Next fire time</th>
-            <th>planification</th>
+            <th>Explanation</th>
             <th>Pause / Resume</th>
-            <th>Delete</th>
+##            <th>Delete</th>
         </tr>
         </thead>
         <tbody>
@@ -34,6 +35,8 @@
                     <td style="text-align: center;"><a
                             href="$root/jobs/$format.html($job.group)/$format.html($job.name)">$format.descKey($job.key)</a></td>
                     <td style="text-align: center;">$format.html($trigger.triggerKey)</td>
+                    <td style="text-align: center;">$trigger.glassScheduler</td>
+
                     <td style="text-align: center;">
                         $format.date($trigger.startTime)
                         #if ($trigger.running) &nbsp;<span style="color: red;">running</span> #end
@@ -57,16 +60,16 @@
                             </a>
                         #end
                     </td>
-                    <td style="text-align: center;">
-                        <a onclick="javascript:return(confirm('Are you sure you want to delete ?'));"
-                           href="$root/jobs/$format.html($job.group)/$format.html($job.name)/triggers/$format.html($trigger.group)/$format.html($trigger.name)/delete?redirect=$current"
-                           title="delete">
-                            <img alt="delete" src="$root/image/delete.png"/>
-                        </a>
-                    </td>
+##                    <td style="text-align: center;">
+##                        <a onclick="javascript:return(confirm('Are you sure you want to delete ?'));"
+##                           href="$root/jobs/$format.html($job.group)/$format.html($job.name)/triggers/$format.html($trigger.group)/$format.html($trigger.name)/delete?redirect=$current"
+##                           title="delete">
+##                            <img alt="delete" src="$root/image/delete.png"/>
+##                        </a>
+##                    </td>
                 </tr>
                 <tr>
-                    <td colspan="9">
+                    <td colspan="8">
                         <span class="code">$format.dataMap($trigger.dataMap)</span>
                     </td>
                 </tr>

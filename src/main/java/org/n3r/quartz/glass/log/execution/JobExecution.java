@@ -2,22 +2,19 @@ package org.n3r.quartz.glass.log.execution;
 
 import org.n3r.quartz.glass.job.util.JobDataMapUtils;
 import org.n3r.quartz.glass.util.Dates;
+import org.n3r.quartz.glass.util.Jobs;
 import org.n3r.quartz.glass.util.Keys;
+import org.n3r.quartz.glass.web.util.JobWrapperForView;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobKey;
-import org.quartz.Scheduler;
 import org.quartz.TriggerKey;
 
 import java.util.Date;
 
 /**
  * Summary of a job execution stored as a log.
- *
- * @author damien bourdette
  */
 public class JobExecution {
-    private static final String KEY_IN_CONTEXT = "__GLASS_JOB_EXECUTION_CONTEXT";
-
     private Long id;
 
     private Date startDate;
@@ -52,7 +49,8 @@ public class JobExecution {
      */
     public void fillWithContext(JobExecutionContext context) {
         startDate = context.getFireTime();
-        jobClass = context.getJobDetail().getJobClass().getName();
+
+        jobClass = Jobs.jobCass(context.getJobDetail()).getName();
 
         JobKey key = context.getJobDetail().getKey();
         jobKey = Keys.desc(key);
@@ -62,7 +60,7 @@ public class JobExecution {
         triggerKey = Keys.desc(key2);
         triggerGroup = key2.getGroup();
         triggerName = key2.getName();
-        dataMap = JobDataMapUtils.toProperties(context.getMergedJobDataMap(), "\n");
+        dataMap = JobDataMapUtils.toProperties(context.getMergedJobDataMap());
     }
 
     public void warn() {

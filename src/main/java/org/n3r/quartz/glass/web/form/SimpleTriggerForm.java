@@ -24,7 +24,7 @@ public class SimpleTriggerForm extends TriggerFormSupport implements TriggerForm
     public SimpleTriggerForm(Trigger trigger) {
         this.startTime = Dates.copy(trigger.getStartTime());
         this.endTime = Dates.copy(trigger.getEndTime());
-        this.dataMap = JobDataMapUtils.toProperties(trigger.getJobDataMap(), "\n");
+        this.dataMap = JobDataMapUtils.toProperties(trigger.getJobDataMap());
         this.repeatCount = ((SimpleTrigger) trigger).getRepeatCount();
         this.intervalInMilliseconds = (int) ((SimpleTrigger) trigger).getRepeatInterval();
     }
@@ -35,7 +35,7 @@ public class SimpleTriggerForm extends TriggerFormSupport implements TriggerForm
         TriggerBuilder<Trigger> builder = TriggerBuilder.newTrigger().forJob(trigger.getJobKey().getName(), trigger.getJobKey().getGroup())
                 .withIdentity(trigger.getKey().getName(), trigger.getKey().getGroup())
                 .startAt(startTime).endAt(endTime)
-                .usingJobData(JobDataMapUtils.fromProperties(dataMap));
+                .usingJobData(JobDataMapUtils.fromDataMapStr(dataMap));
 
         if (repeatCount == -1) {
             builder.withSchedule(SimpleScheduleBuilder.simpleSchedule().repeatForever()

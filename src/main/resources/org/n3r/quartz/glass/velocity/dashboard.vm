@@ -14,8 +14,8 @@
         <table class="table">
             <thead>
             <tr>
-                <th>Job group / name</th>
-                <th>Trigger group / name</th>
+                <th>JobKey</th>
+                <th>TriggerKey</th>
                 <th>Previous firetime</th>
                 <th>Next firetime</th>
                 <th>Actions</th>
@@ -24,8 +24,8 @@
             <tbody>
                 #foreach ($trigger in $hangedTriggers)
                 <tr>
-                    <td>${trigger.jobGroup} / ${trigger.jobName}</td>
-                    <td>${trigger.group} / ${trigger.name}</td>
+                    <td>$format.descKey(${trigger.jobKey})</td>
+                    <td>$format.descKey(${trigger.key})</td>
                     <td>$format.date($trigger.previousFireTime)</td>
                     <td>$format.date($trigger.nextFireTime)</td>
                     <td nowrap="nowrap">
@@ -50,11 +50,11 @@
         <table>
             <thead>
             <tr>
-                <th>Job group / name</th>
+                <th>JobKey</th>
                 <th>Class</th>
                 <th>FireTime</th>
                 <th>Duration</th>
-                <th>Planification</th>
+                <th>Explanation</th>
                 <th>Stop</th>
             </tr>
             </thead>
@@ -62,9 +62,8 @@
                 #foreach ($jobContext in $runningJobs)
                 <tr>
                     <td>
-                        <a href="$root/jobs/$format.html($jobContext.jobDetail.group)/$format.html($jobContext.jobDetail.name)">${jobContext.jobDetail.group}
-                            / ${jobContext.jobDetail.name}</a></td>
-                    <td>${jobContext.jobDetail.jobClass}</td>
+                        <a href="$root/jobs/$format.html($jobContext.jobDetail.group)/$format.html($jobContext.jobDetail.name)">$format.descKey(${jobContext.jobDetail.key})</a></td>
+                    <td>$format.jobClass(${jobContext.jobDetail})</td>
                     <td style="text-align: center">$format.date($jobContext.fireTime)</td>
                     <td style="text-align: center">$utils.duration($jobContext)</td>
                     <td style="text-align: center">$utils.planification($jobContext.trigger)</td>
@@ -91,20 +90,16 @@
         <table>
             <thead>
             <tr>
-                <th>Job group</th>
-                <th>Job name</th>
-                <th>Group</th>
-                <th>Name</th>
+                <th>JobKey</th>
+                <th>TriggerKey</th>
                 <th>Next firetime</th>
             </tr>
             </thead>
             <tbody>
                 #foreach ($trigger in $pausedTriggers)
                 <tr>
-                    <td>${trigger.jobGroup}</td>
-                    <td>${trigger.jobName}</td>
-                    <td>${trigger.group}</td>
-                    <td>${trigger.name}</td>
+                    <td>$format.descKey(${trigger.jobKey})</td>
+                    <td>$format.descKey(${trigger.key})</td>
                     <td>$format.date($trigger.nextFireTime)</td>
                 </tr>
                 #end

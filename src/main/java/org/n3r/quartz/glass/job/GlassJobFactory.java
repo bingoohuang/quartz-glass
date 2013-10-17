@@ -15,6 +15,7 @@ import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.stereotype.Component;
+import org.springframework.util.MethodInvoker;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -44,22 +45,20 @@ public class GlassJobFactory implements JobFactory {
     }
 
     private void setProperties(TriggerFiredBundle bundle, Job job) {
+        JobDetail jobDetail = bundle.getJobDetail();
+        MethodInvoker methodInvoker = (MethodInvoker) jobDetail.getJobDataMap().get("methodInvoker");
+        Object targetObject = methodInvoker == null ? job : methodInvoker.getTargetObject();
         MutablePropertyValues pvs = new MutablePropertyValues();
 
-        pvs.addPropertyValues(bundle.getJobDetail().getJobDataMap());
+        pvs.addPropertyValues(jobDetail.getJobDataMap());
         pvs.addPropertyValues(bundle.getTrigger().getJobDataMap());
 
-        buildAccessor(job).setPropertyValues(pvs, true);
+        buildAccessor(targetObject).setPropertyValues(pvs, true);
     }
 
-    private AbstractPropertyAccessor buildAccessor(Job job) {
-        AbstractPropertyAccessor accessor = null;
-
-        if (configuration.getInjectionType() == InjectionType.FIELD) {
-            accessor = new DirectFieldAccessor(job);
-        } else {
-            accessor = new BeanWrapperImpl(job);
-        }
+    private AbstractPropertyAccessor buildAccessor(Object job) {
+        boolean injectType = configuration.getInjectionType() == InjectionType.FIELD;
+        AbstractPropertyAccessor accessor = injectType ? new DirectFieldAccessor(job) : new BeanWrapperImpl(job);
 
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat(configuration.getDateFormat());
         CustomDateEditor customDateEditor = new CustomDateEditor(simpleDateFormat, true);

@@ -1,7 +1,5 @@
 <!DOCTYPE html>
-
     #parse("org/n3r/quartz/glass/velocity/macro/macros.vm")
-
 <html>
 <head>
     #parse("org/n3r/quartz/glass/velocity/widgets/head.vm")
@@ -9,11 +7,9 @@
 <body>
     #parse("org/n3r/quartz/glass/velocity/widgets/menu.vm")
 
-<h1><span>Job $format.html($job.name)</span></h1>
-
+<h1><span>Job $format.html($job.jobKey)</span></h1>
 <div class="actions">
-    <a href="$root/jobs/$format.html($job.group)/$format.html($job.name)/edit">edit</a>
-    <a href="$root/jobs/$format.html($job.group)/$format.html($job.name)/fire">fire now</a>
+<a href="$root/jobs/$format.html($job.group)/$format.html($job.name)/edit">edit</a>
     <a href="$root/logs/$format.html($job.group)/$format.html($job.name)">logs</a>
     <a onclick="javascript:return(confirm('Are you sure you want to delete ?'));"
        href="$root/jobs/$format.html($job.group)/$format.html($job.name)/delete">delete</a>
@@ -21,10 +17,6 @@
 <div class="table">
     <table>
         <tbody>
-        <tr>
-            <td>JobKey</td>
-            <td>$format.html($job.jobKey)</td>
-        </tr>
         <tr>
             <td>Class</td>
             <td>$format.html($job.jobClass)</td>
@@ -52,7 +44,10 @@
         <tr>
             <td>Data map</td>
             <td>
-                <span class="code">$format.dataMap($dataMap)</span>
+                <form id="jobActionForm" action="$root/jobs/$format.html($job.group)/$format.html($job.name)/fire" method="POST">
+                <input type="input" name="fireJobMap" style="width:300px" value="$format.dataMap($dataMap)"/>
+                <input type="submit" value="Fire Now"/>
+                </form>
             </td>
         </tr>
         </tbody>
@@ -73,11 +68,12 @@
         <tr>
             <th>Type</th>
             <th>TriggerKey</th>
+            <th>Glass Scheduler</th>
             <th>Start time</th>
             <th>End time</th>
             <th>Last fire time</th>
             <th>Next fire time</th>
-            <th>planification</th>
+            <th>Explanation</th>
             <th>Pause / Resume</th>
             <th>Delete</th>
         </tr>
@@ -87,7 +83,9 @@
             <tr>
                 <td style="text-align: center;">$format.html($trigger.type)</td>
                 <td>
-                    <a href="$root/jobs/$format.html($job.group)/$format.html($job.name)/triggers/$format.html($trigger.group)/$format.html($trigger.name)/edit">$format.html($trigger.triggerKey)</a> </td>
+                    <a href="$root/jobs/$format.html($job.group)/$format.html($job.name)/triggers/$format.html($trigger.group)/$format.html($trigger.name)/edit">$format.html($trigger.triggerKey)</a>
+                </td>
+                <td style="text-align: center;">$trigger.glassScheduler</td>
                 <td style="text-align: center;">
                     $format.date($trigger.startTime)
                     #if ($trigger.running) &nbsp;<span style="color: red;">running</span> #end

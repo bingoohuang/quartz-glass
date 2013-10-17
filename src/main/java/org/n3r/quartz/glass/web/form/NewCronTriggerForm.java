@@ -40,7 +40,7 @@ public class NewCronTriggerForm extends CronTriggerForm {
                         .cronSchedule(cronExpression)
                         .withMisfireHandlingInstructionIgnoreMisfires())
                 .startAt(startTime).endAt(endTime)
-                .usingJobData(JobDataMapUtils.fromProperties(dataMap))
+                .usingJobData(JobDataMapUtils.fromDataMapStr(dataMap))
                 .build();
     }
 

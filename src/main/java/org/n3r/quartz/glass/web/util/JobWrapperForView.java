@@ -2,11 +2,15 @@ package org.n3r.quartz.glass.web.util;
 
 import org.n3r.quartz.glass.job.annotation.GlassJob;
 import org.n3r.quartz.glass.job.util.JobDataMapUtils;
+import org.n3r.quartz.glass.util.GlassConstants;
+import org.n3r.quartz.glass.util.Jobs;
 import org.n3r.quartz.glass.util.Keys;
 import org.quartz.Job;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
-import org.quartz.Scheduler;
+import org.springframework.util.MethodInvoker;
+
+import java.lang.reflect.Method;
 
 public class JobWrapperForView {
     private String group;
@@ -24,17 +28,23 @@ public class JobWrapperForView {
         group = key.getGroup();
         name = key.getName();
 
-        Class<? extends Job> jobClass1 = jobDetail.getJobClass();
-        jobClass = jobClass1.getName();
-        GlassJob glassJob = jobClass1.getAnnotation(GlassJob.class);
-        if (glassJob != null) {
-            jobDesc = glassJob.description();
-            jobTeam = glassJob.team();
-            jobCreated = glassJob.created();
-        }
+        jobClass = Jobs.jobCass(jobDetail).getName();
 
-        jobDataMap = JobDataMapUtils.toProperties(jobDetail.getJobDataMap(), ", ");
+        descJob(jobDetail);
+
+        jobDataMap = JobDataMapUtils.toProperties(jobDetail.getJobDataMap());
     }
+
+    private void descJob(JobDetail jobDetail) {
+        GlassJob glassJob = Jobs.glassJob(jobDetail);
+
+        if (glassJob == null) return;
+
+        jobDesc = glassJob.description();
+        jobTeam = glassJob.team();
+        jobCreated = glassJob.created();
+    }
+
 
     public String getJobKey() {
         return jobKey;

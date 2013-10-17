@@ -8,18 +8,30 @@
     <bean id="MyJob每30分钟" class="org.n3r.quartz.glass.job.GlassTriggerFactoryBean">
         <property name="jobClass" value="org.n3r.quartz.glass.job.demo.MyJob"/>
         <property name="scheduler" value="Every 30 minutes"/>
-        <property name="jobDataMap" value="staticType=hotSale"/>
+        <property name="triggerDataMap" value="staticType=hotSale"/>
     </bean>
 
     <bean id="MyJob每小时开始20分钟" class="org.n3r.quartz.glass.job.GlassTriggerFactoryBean">
         <property name="jobClass" value="org.n3r.quartz.glass.job.demo.MyJob"/>
         <property name="scheduler" value="0 20 * * * ?"/>
-        <property name="jobDataMap" value="staticType=商品静态"/>
+        <property name="triggerDataMap" value="staticType=商品静态"/>
     </bean>
 
     <bean id="MyJob每天凌晨3点" class="org.n3r.quartz.glass.job.GlassTriggerFactoryBean">
         <property name="jobClass" value="org.n3r.quartz.glass.job.demo.MyJob"/>
         <property name="scheduler" value="At 03:00"/>
         <property name="jobDataMap" value="staticType=首页静态"/>
+    </bean>
+
+    <bean id="POJO每小时40分钟干活" class="org.n3r.quartz.glass.job.GlassTriggerFactoryBean">
+        <property name="jobClass" value="org.n3r.quartz.glass.job.demo.PojoJob"/>
+        <property name="scheduler" value="At ??:40"/>
+        <property name="triggerDataMap" value="orderType=退货订单"/>
+    </bean>
+
+    <bean id="POJO每1分钟干活" class="org.n3r.quartz.glass.job.GlassTriggerFactoryBean">
+        <property name="jobClass" value="org.n3r.quartz.glass.job.demo.PojoJob"/>
+        <property name="scheduler" value="Every 1 minute"/>
+        <property name="triggerDataMap" value="orderType=退货订单,logLevel=INFO"/>
     </bean>
 </beans>

@@ -11,13 +11,13 @@ public class JobForm {
     }
 
     public JobForm(JobDetail jobDetail) {
-        this.dataMap = JobDataMapUtils.toProperties(jobDetail.getJobDataMap(), "\n");
+        this.dataMap = JobDataMapUtils.toProperties(jobDetail.getJobDataMap());
     }
 
     public JobDetail getJobDetails(JobDetail job) {
         return JobBuilder.newJob(job.getJobClass())
                 .withIdentity(job.getKey())
-                .usingJobData(JobDataMapUtils.fromProperties(dataMap))
+                .usingJobData(JobDataMapUtils.fromDataMapStr(dataMap))
                 .storeDurably()
                 .build();
     }

@@ -35,7 +35,7 @@ public class NewSimpleTriggerForm extends SimpleTriggerForm {
 
         TriggerBuilder<Trigger> builder = TriggerBuilder.newTrigger().forJob(name.trim(), group.trim()).withIdentity(triggerName.trim(), triggerGroup.trim())
                 .startAt(startTime).endAt(endTime)
-                .usingJobData(JobDataMapUtils.fromProperties(dataMap));
+                .usingJobData(JobDataMapUtils.fromDataMapStr(dataMap));
 
         if (repeatCount == -1) {
             builder.withSchedule(SimpleScheduleBuilder.simpleSchedule().repeatForever()

@@ -34,7 +34,8 @@ public class MemoryJobExecutions implements JobExecutions {
 
     @Override
     public synchronized void jobEnds(JobExecution execution, JobExecutionContext context) {
-        execution.setEndDate(new DateTime(context.getFireTime()).plusMillis((int) context.getJobRunTime()).toDate());
+        execution.setEndDate(new DateTime(context.getFireTime())
+                .plusMillis((int) context.getJobRunTime()).toDate());
         execution.setEnded(true);
     }
 

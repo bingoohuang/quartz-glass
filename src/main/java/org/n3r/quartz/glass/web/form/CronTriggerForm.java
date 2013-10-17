@@ -21,7 +21,7 @@ public class CronTriggerForm extends TriggerFormSupport implements TriggerForm {
     public CronTriggerForm(Trigger trigger) {
         this.startTime = Dates.copy(trigger.getStartTime());
         this.endTime = Dates.copy(trigger.getEndTime());
-        this.dataMap = JobDataMapUtils.toProperties(trigger.getJobDataMap(), "\n");
+        this.dataMap = JobDataMapUtils.toProperties(trigger.getJobDataMap());
         this.cronExpression = ((CronTrigger) trigger).getCronExpression();
 
     }
@@ -33,7 +33,7 @@ public class CronTriggerForm extends TriggerFormSupport implements TriggerForm {
                 .withIdentity(trigger.getKey().getName(), trigger.getKey().getGroup())
                 .withSchedule(CronScheduleBuilder.cronSchedule(cronExpression).withMisfireHandlingInstructionIgnoreMisfires())
                 .startAt(startTime).endAt(endTime)
-                .usingJobData(JobDataMapUtils.fromProperties(dataMap))
+                .usingJobData(JobDataMapUtils.fromDataMapStr(dataMap))
                 .build();
     }
 

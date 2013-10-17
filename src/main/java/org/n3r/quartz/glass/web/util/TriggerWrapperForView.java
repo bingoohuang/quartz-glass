@@ -3,6 +3,7 @@ package org.n3r.quartz.glass.web.util;
 import org.n3r.quartz.glass.job.util.JobDataMapUtils;
 import org.n3r.quartz.glass.job.util.TriggerUtils;
 import org.n3r.quartz.glass.util.Dates;
+import org.n3r.quartz.glass.util.GlassConstants;
 import org.n3r.quartz.glass.util.Keys;
 import org.quartz.*;
 
@@ -16,7 +17,7 @@ public class TriggerWrapperForView {
     private String name;
     private Date startTime;
     private Date endTime;
-    private String cronExpression;
+    private String glassScheduler;
     private String dataMap;
     private Trigger trigger;
     private boolean running;
@@ -44,13 +45,15 @@ public class TriggerWrapperForView {
         wrapper.startTime = trigger.getStartTime();
         wrapper.endTime = trigger.getEndTime();
         wrapper.paused = scheduler.getTriggerState(trigger.getKey()) == Trigger.TriggerState.PAUSED;
-        wrapper.dataMap = JobDataMapUtils.toProperties(trigger.getJobDataMap(), "\n");
+        wrapper.dataMap = JobDataMapUtils.toProperties(trigger.getJobDataMap());
 
-        if (trigger instanceof CronTrigger) {
+        wrapper.glassScheduler = trigger.getJobDataMap().getString(GlassConstants.GLASS_SCHEDULER);
+        if ( wrapper.glassScheduler == null && trigger instanceof CronTrigger) {
             CronTrigger cronTrigger = (CronTrigger) trigger;
 
-            wrapper.cronExpression = cronTrigger.getCronExpression();
+            wrapper.glassScheduler = cronTrigger.getCronExpression();
         }
+        if ( wrapper.glassScheduler == null) wrapper.glassScheduler = "";
 
         for (JobExecutionContext executionContext : runningJobs) {
             if (executionContext.getTrigger().equals(trigger)) {
@@ -86,8 +89,8 @@ public class TriggerWrapperForView {
         return Dates.copy(endTime);
     }
 
-    public String getCronExpression() {
-        return cronExpression;
+    public String getGlassScheduler() {
+        return glassScheduler;
     }
 
     public String getDataMap() {

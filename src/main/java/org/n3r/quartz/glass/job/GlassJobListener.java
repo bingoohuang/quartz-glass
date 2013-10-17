@@ -8,6 +8,8 @@ import org.n3r.quartz.glass.log.execution.CurrentJobExecution;
 import org.n3r.quartz.glass.log.execution.JobExecution;
 import org.n3r.quartz.glass.log.execution.JobExecutions;
 import org.n3r.quartz.glass.log.joblog.JobLogs;
+import org.n3r.quartz.glass.util.Jobs;
+import org.quartz.JobDetail;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
 import org.quartz.listeners.JobListenerSupport;
@@ -41,7 +43,9 @@ public class GlassJobListener extends JobListenerSupport {
         if (exception != null) {
             execution.error();
 
-            JobLogs.error("Exception occurred while executing job " + context.getJobDetail().getClass().getName(), exception);
+            JobDetail jobDetail = context.getJobDetail();
+            JobLogs.error("Exception occurred while executing job "
+                    + Jobs.jobCass(jobDetail).getName(), exception);
         }
 
         executions.jobEnds(execution, context);
@@ -52,12 +56,13 @@ public class GlassJobListener extends JobListenerSupport {
         CurrentJobExecutionContext.unset();
     }
 
+
+
     private String getLogLevel(JobExecutionContext context) {
         String level = context.getMergedJobDataMap().getString(JobArgumentBean.LOG_LEVEL_ARGUMENT);
-
         if (StringUtils.isNotEmpty(level)) return level;
 
-        GlassJob annotation = context.getJobDetail().getJobClass().getAnnotation(GlassJob.class);
+        GlassJob annotation = Jobs.glassJob(context.getJobDetail());
 
         if (annotation != null) return annotation.logLevel().name();
 

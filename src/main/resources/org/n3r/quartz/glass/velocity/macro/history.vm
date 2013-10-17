@@ -9,6 +9,7 @@
             <th>Start</th>
             <th>End</th>
             <th>Job class</th>
+            <th>DataMap</th>
         </tr>
         </thead>
         <tbody>
@@ -32,11 +33,11 @@
                     #end
                 </td>
                 <td>$!log.jobClass</td>
+                <td>$!log.dataMap</td>
+
             </tr>
             <tr>
-                <td colspan="7">
-                    <div class="innertab-title">arguments</div>
-                    <div class="code innertab-content">$!format.dataMap($log.dataMap)</div>
+                <td colspan="8">
                     <div class="innertab-title">logs</div>
                     <div class="innertab-content">
                         <a href="#logs-${log.id}-link" id="logs-${log.id}-link"

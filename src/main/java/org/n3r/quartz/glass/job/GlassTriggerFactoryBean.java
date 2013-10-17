@@ -1,14 +1,22 @@
 package org.n3r.quartz.glass.job;
 
+import org.n3r.quartz.glass.job.annotation.GlassJob;
 import org.n3r.quartz.glass.job.util.JobDataMapUtils;
+import org.n3r.quartz.glass.util.GlassConstants;
 import org.n3r.quartz.glass.util.GlassScheduleParser;
+import org.n3r.quartz.glass.util.Keys;
 import org.quartz.*;
+import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean;
 import org.springframework.util.Assert;
+import org.springframework.util.MethodInvoker;
 
+import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class GlassTriggerFactoryBean implements FactoryBean<Trigger>, BeanNameAware, InitializingBean {
@@ -23,6 +31,7 @@ public class GlassTriggerFactoryBean implements FactoryBean<Trigger>, BeanNameAw
     private String beanName;
     private long startDelay;
     private Date startTime;
+    private String triggerDataMap;
     private String jobDataMap;
 
     /**
@@ -60,8 +69,8 @@ public class GlassTriggerFactoryBean implements FactoryBean<Trigger>, BeanNameAw
     /**
      * Set the trigger's JobDataMap.
      */
-    public void setJobDataMap(String jobDataMap) {
-        this.jobDataMap = jobDataMap;
+    public void setTriggerDataMap(String jobDataMap) {
+        this.triggerDataMap = jobDataMap;
     }
 
     @Override
@@ -69,7 +78,6 @@ public class GlassTriggerFactoryBean implements FactoryBean<Trigger>, BeanNameAw
         this.beanName = beanName;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void afterPropertiesSet() throws Exception {
         if (this.name == null) this.name = this.beanName;
@@ -82,23 +90,98 @@ public class GlassTriggerFactoryBean implements FactoryBean<Trigger>, BeanNameAw
         }
 
         // define the job and tie it to our HelloJob class
-        Class<? extends Job> jobClazz = (Class<? extends Job>) Class.forName(jobClass);
-        JobDetail jobDetail = JobBuilder.newJob(jobClazz)
-                .withIdentity(jobClazz.getSimpleName(), group)
-                .storeDurably()
-                .build();
+        Class<?> defClass = Class.forName(jobClass);
+        JobKey jobKey = JobKey.jobKey(defClass.getSimpleName() + Keys.nextJobIndexPostfix(), group);
+        JobDataMap jobDataMap = JobDataMapUtils.fromDataMapStr(this.jobDataMap);
 
-        this.quartzScheduler.addJob(jobDetail, true);
+        JobDetail jobDetail = Job.class.isAssignableFrom(defClass)
+                ? createNormalJobDetail(defClass, jobKey, jobDataMap)
+                : methodExecuterJobDetail(defClass, jobKey, jobDataMap);
+
+        jobDetail = addJobSmartly(jobDetail);
+
+        ScheduleBuilder<? extends Trigger> scheduleBuilder = GlassScheduleParser.parse(this.scheduler);
+        JobDataMap triggerDataMap = JobDataMapUtils.fromDataMapStr(this.triggerDataMap);
+        triggerDataMap.put(GlassConstants.GLASS_SCHEDULER, this.scheduler);
 
         this.trigger = TriggerBuilder.newTrigger()
                 .withIdentity(name, group)
                 .startAt(startTime)
                 .forJob(jobDetail)
-                .withSchedule(GlassScheduleParser.parse(this.scheduler))
-                .usingJobData(JobDataMapUtils.fromProperties(jobDataMap))
+                .withSchedule(scheduleBuilder)
+                .usingJobData(triggerDataMap)
                 .build();
 
         this.quartzScheduler.scheduleJob(this.trigger);
+    }
+
+    private JobDetail addJobSmartly(JobDetail thisJobDetail) throws SchedulerException {
+        for (String jobGroup : quartzScheduler.getJobGroupNames()) {
+            if (!jobGroup.equals(this.group)) continue;
+
+            for (JobKey jobKey : quartzScheduler.getJobKeys(GroupMatcher.<JobKey>groupEquals(group))) {
+                JobDetail jobDetail = quartzScheduler.getJobDetail(jobKey);
+                if (jobDetail.getJobClass() != thisJobDetail.getJobClass()) continue;
+
+                MethodInvoker methodInvoker = (MethodInvoker) jobDetail.getJobDataMap().get(GlassConstants.METHOD_INVOKER);
+                MethodInvoker thisInvoker = (MethodInvoker) thisJobDetail.getJobDataMap().get(GlassConstants.METHOD_INVOKER);
+                // check whether the job datamap is equal
+                if (methodInvoker == null && thisInvoker == null
+                        && jobDetail.getJobDataMap().equals(thisJobDetail.getJobDataMap())) return jobDetail;
+                else if (methodInvoker != null && thisInvoker != null
+                        && methodInvoker.getTargetClass() == thisInvoker.getTargetClass()
+                        && jobDetail.getJobDataMap().equals(thisJobDetail.getJobDataMap())) return jobDetail;
+            }
+        }
+
+        quartzScheduler.addJob(thisJobDetail, false);
+        return thisJobDetail;
+    }
+
+    @SuppressWarnings("unchecked")
+    private JobDetail createNormalJobDetail(Class<?> defClass, JobKey jobKey, JobDataMap jobDataMapping) {
+        return JobBuilder.newJob((Class<? extends Job>) defClass)
+                .withIdentity(jobKey)
+                .usingJobData(jobDataMapping)
+                .storeDurably()
+                .build();
+    }
+
+    private JobDetail methodExecuterJobDetail(Class<?> defClass, JobKey jobKey, JobDataMap jobDataMapping) throws Exception {
+        MethodInvokingJobDetailFactoryBean factoryBean = new MethodInvokingJobDetailFactoryBean();
+        factoryBean.setGroup(jobKey.getGroup());
+        factoryBean.setName(jobKey.getName());
+        factoryBean.setTargetObject(defClass.newInstance());
+        factoryBean.setTargetMethod(findExecuteMethod(defClass));
+        factoryBean.afterPropertiesSet();
+
+        JobDetail jobDetail = factoryBean.getObject();
+        jobDetail.getJobDataMap().putAll(jobDataMapping);
+
+        return jobDetail;
+    }
+
+    private String findExecuteMethod(Class<?> defClass) {
+        Method[] declaredMethods = defClass.getDeclaredMethods();
+        ArrayList<Method> candidates = new ArrayList<Method>();
+        for (Method method : declaredMethods) {
+            String methodName = method.getName();
+            if (methodName.startsWith("get") || methodName.startsWith("set")) continue;
+            candidates.add(method);
+        }
+
+        if (candidates.size() == 1) return candidates.get(0).getName();
+
+        ArrayList<Method> annotatedCandidates = new ArrayList<Method>();
+        for (Method method : candidates) {
+            if (method.getAnnotation(GlassJob.class) != null) {
+                annotatedCandidates.add(method);
+            }
+        }
+
+        if (annotatedCandidates.size() == 1) return annotatedCandidates.get(0).getName();
+
+        throw new RuntimeException(defClass + " is not a valid job class");
     }
 
     @Override
@@ -118,5 +201,9 @@ public class GlassTriggerFactoryBean implements FactoryBean<Trigger>, BeanNameAw
 
     public void setQuartzScheduler(Scheduler quartzScheduler) {
         this.quartzScheduler = quartzScheduler;
+    }
+
+    public void setJobDataMap(String jobDataMap) {
+        this.jobDataMap = jobDataMap;
     }
 }

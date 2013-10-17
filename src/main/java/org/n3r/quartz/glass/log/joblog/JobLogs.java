@@ -12,7 +12,6 @@ import org.slf4j.helpers.MessageFormatter;
 /**
  * Sends logs to log store and through slf4j.
  *
- * @author damien bourdette
  */
 public class JobLogs {
     private static final Logger LOGGER = LoggerFactory.getLogger(JobLogs.class);
@@ -44,14 +43,15 @@ public class JobLogs {
         try {
             setLevel(JobLogLevel.valueOf(level));
         } catch (Exception e) {
-            LOGGER.warn("{} has an incorrect value ({}) for job, defaulting to WARN", JobArgumentBean.LOG_LEVEL_ARGUMENT, level);
+            LOGGER.warn("{} has an incorrect value ({}) for job, defaulting to WARN",
+                    JobArgumentBean.LOG_LEVEL_ARGUMENT, level);
 
             setLevel(JobLogLevel.WARN);
         }
     }
 
     public static void setDefaultLevel() {
-        setLevel(JobLogLevel.WARN);
+        setLevel(JobLogLevel.INFO);
     }
 
     public static void debug(String message) {

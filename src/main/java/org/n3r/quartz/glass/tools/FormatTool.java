@@ -3,7 +3,9 @@ package org.n3r.quartz.glass.tools;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.quartz.glass.SpringConfig;
+import org.n3r.quartz.glass.util.Jobs;
 import org.n3r.quartz.glass.util.Keys;
+import org.quartz.JobDetail;
 import org.quartz.utils.Key;
 
 import java.text.SimpleDateFormat;
@@ -45,5 +47,9 @@ public class FormatTool {
 
     public String descKey(Key<?> key) {
         return html(Keys.desc(key));
+    }
+
+    public String jobClass(JobDetail jobDetail) {
+        return Jobs.jobCass(jobDetail).getName();
     }
 }

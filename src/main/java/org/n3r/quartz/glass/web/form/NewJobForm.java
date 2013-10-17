@@ -32,7 +32,7 @@ public class NewJobForm {
         this.group = jobDetail.getKey().getGroup();
         this.name = jobDetail.getKey().getName();
         this.clazz = jobDetail.getJobClass();
-        this.dataMap = JobDataMapUtils.toProperties(jobDetail.getJobDataMap(), "\n");
+        this.dataMap = JobDataMapUtils.toProperties(jobDetail.getJobDataMap());
     }
 
     /**
@@ -43,7 +43,7 @@ public class NewJobForm {
     public JobDetail getJobDetails() {
         return JobBuilder.newJob(clazz)
                 .withIdentity(name.trim(), group.trim())
-                .usingJobData(JobDataMapUtils.fromProperties(dataMap))
+                .usingJobData(JobDataMapUtils.fromDataMapStr(dataMap))
                 .storeDurably()
                 .build();
     }

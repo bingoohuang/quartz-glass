@@ -5,6 +5,7 @@ import org.n3r.quartz.glass.job.annotation.JobArgumentBean;
 import org.n3r.quartz.glass.job.annotation.JobBean;
 import org.n3r.quartz.glass.job.util.JobDataMapUtils;
 import org.n3r.quartz.glass.log.execution.JobExecutions;
+import org.n3r.quartz.glass.util.Keys;
 import org.n3r.quartz.glass.util.Query;
 import org.n3r.quartz.glass.web.form.JobForm;
 import org.n3r.quartz.glass.web.form.NewJobForm;
@@ -17,11 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -66,7 +65,8 @@ public class JobsController {
     }
 
     @RequestMapping("/jobs/{group}/{name}")
-    public String job(@PathVariable String group, @PathVariable String name, Model model) throws SchedulerException {
+    public String job(@PathVariable String group,
+                      @PathVariable String name, Model model) throws SchedulerException {
         JobDetail job = scheduler.getJobDetail(new JobKey(name, group));
 
         if (job == null) return "redirect:" + configuration.getRoot() + "/jobs";
@@ -74,7 +74,7 @@ public class JobsController {
         model.addAttribute("job", new JobWrapperForView(job));
         model.addAttribute("jobBean", JobBean.fromClass(job.getJobClass()));
         model.addAttribute("jobArguments", JobArgumentBean.fromClass(job.getJobClass()));
-        model.addAttribute("dataMap", JobDataMapUtils.toProperties(job.getJobDataMap(), "\n"));
+        model.addAttribute("dataMap", JobDataMapUtils.toProperties(job.getJobDataMap()));
 
         List<? extends Trigger> triggers = scheduler.getTriggersOfJob(job.getKey());
 
@@ -90,7 +90,8 @@ public class JobsController {
     }
 
     @RequestMapping(value = "/jobs/new", method = RequestMethod.POST)
-    public String postCreateJob(@Valid @ModelAttribute("form") NewJobForm form, BindingResult bindingResult, Model model) throws SchedulerException {
+    public String postCreateJob(@Valid @ModelAttribute("form") NewJobForm form,
+                                BindingResult bindingResult, Model model) throws SchedulerException {
         if (bindingResult.hasErrors()) return form(model, form);
 
         scheduler.addJob(form.getJobDetails(), true);
@@ -99,7 +100,8 @@ public class JobsController {
     }
 
     @RequestMapping("/jobs/{group}/{name}/edit")
-    public String updateJob(@PathVariable String group, @PathVariable String name, Model model) throws SchedulerException {
+    public String updateJob(@PathVariable String group,
+                            @PathVariable String name, Model model) throws SchedulerException {
         JobDetail job = scheduler.getJobDetail(new JobKey(name, group));
 
         if (job == null) return "redirect:" + configuration.getRoot() + "/jobs";
@@ -108,7 +110,9 @@ public class JobsController {
     }
 
     @RequestMapping(value = "/jobs/{group}/{name}/edit", method = RequestMethod.POST)
-    public String postUpdateJob(@PathVariable String group, @PathVariable String name, @Valid @ModelAttribute("form") JobForm form, BindingResult bindingResult, Model model) throws SchedulerException {
+    public String postUpdateJob(@PathVariable String group, @PathVariable String name,
+                                @Valid @ModelAttribute("form") JobForm form,
+                                BindingResult bindingResult, Model model) throws SchedulerException {
         JobDetail job = scheduler.getJobDetail(new JobKey(name, group));
 
         if (job == null) return "redirect:" + configuration.getRoot() + "/jobs";
@@ -133,13 +137,25 @@ public class JobsController {
         return "redirect:" + configuration.getRoot() + "/jobs";
     }
 
-    @RequestMapping("/jobs/{group}/{name}/fire")
-    public String fire(@PathVariable String group, @PathVariable String name) throws SchedulerException {
-        JobDetail job = scheduler.getJobDetail(new JobKey(name, group));
+    @RequestMapping(value = "/jobs/{group}/{name}/fire", method = RequestMethod.POST)
+    public String fire(HttpServletRequest request,
+                        @PathVariable String group, @PathVariable String name
+                      ) throws SchedulerException {
+        JobKey jobKey = new JobKey(name, group);
+        JobDetail job = scheduler.getJobDetail(jobKey);
 
         if (job == null) return "redirect:" + configuration.getRoot() + "/jobs";
 
-        scheduler.triggerJob(job.getKey());
+        String fireJobMap = request.getParameter("fireJobMap");
+        // scheduler.triggerJob(job.getKey());
+        Trigger trigger = TriggerBuilder.newTrigger()
+                .forJob(jobKey)
+                .withIdentity(Keys.getFireKey(), job.getKey().getGroup())
+                .usingJobData(JobDataMapUtils.fromDataMapStr(fireJobMap))
+                .startNow()
+                .build();
+
+        scheduler.scheduleJob(trigger);
 
         return "redirect:" + configuration.getRoot() + "/jobs/{group}/{name}";
     }

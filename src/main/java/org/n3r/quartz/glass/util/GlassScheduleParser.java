@@ -21,23 +21,26 @@ public class GlassScheduleParser {
             return parseAtExpr(expr.substring("At".length()));
         }
 
-
         return CronScheduleBuilder
                 .cronSchedule(schedulerExpr)
                 .withMisfireHandlingInstructionIgnoreMisfires();
     }
 
     static Pattern atExprPattern = Pattern.compile(
-            "\\s+\\d\\d:\\d\\d", Pattern.CASE_INSENSITIVE);
+            "\\s+(\\d\\d|\\?\\?):(\\d\\d)", Pattern.CASE_INSENSITIVE);
     private static ScheduleBuilder<? extends Trigger> parseAtExpr(String atExpr) {
         Matcher matcher = atExprPattern.matcher(atExpr);
         if (!matcher.matches()) throw new RuntimeException(atExpr + " is not valid");
+
+        if (matcher.group(1).equals("??")) {
+            return CronScheduleBuilder.cronSchedule("0 " + matcher.group(2) + " * * * ?");
+        }
+
         DateTimeFormatter formatter = DateTimeFormat.forPattern("HH:mm");
-
-
         DateTime dateTime =   formatter.parseDateTime(matcher.group().trim());
 
-        return CronScheduleBuilder.dailyAtHourAndMinute(dateTime.getHourOfDay(), dateTime.getMinuteOfHour());
+        return CronScheduleBuilder.dailyAtHourAndMinute(dateTime.getHourOfDay(),
+                dateTime.getMinuteOfHour());
     }
 
     static Pattern everyExprPattern = Pattern.compile(

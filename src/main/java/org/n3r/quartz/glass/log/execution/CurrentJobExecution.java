@@ -1,9 +1,5 @@
 package org.n3r.quartz.glass.log.execution;
 
-/**
- * @author damien bourdette
- * @version \$Revision$
- */
 public class CurrentJobExecution {
     private static ThreadLocal<JobExecution> threadExecution = new ThreadLocal<JobExecution>();
 

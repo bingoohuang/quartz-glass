@@ -14,6 +14,11 @@ public class MyJob implements Job {
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
+        try {
+            Thread.sleep(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         JobLogs.warn("静态化类型是: " + staticType);
     }
 }

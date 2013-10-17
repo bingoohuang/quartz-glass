@@ -19,7 +19,7 @@
             <th>Team</th>
             <th>Created</th>
             <th>JobDataMap</th>
-            <th>Delete</th>
+##            <th>Delete</th>
         </tr>
         </thead>
         <tbody>
@@ -32,12 +32,12 @@
                 <td style="text-align: center;">$format.html(${job.jobTeam})</td>
                 <td style="text-align: center;">$format.html(${job.jobCreated})</td>
                 <td style="text-align: center;">$format.html(${job.jobDataMap})</td>
-                <td style="text-align: center;">
-                    <a onclick="javascript:return(confirm('Are you sure you want to delete ?'));"
-                       href="$root/jobs/$format.html($job.group)/$format.html($job.name)/delete">
-                        <img alt="delete" src="$root/image/delete.png"/>
-                    </a>
-                </td>
+##                <td style="text-align: center;">
+##                    <a onclick="javascript:return(confirm('Are you sure you want to delete ?'));"
+##                       href="$root/jobs/$format.html($job.group)/$format.html($job.name)/delete">
+##                        <img alt="delete" src="$root/image/delete.png"/>
+##                    </a>
+##                </td>
             </tr>
             #end
         </tbody>
