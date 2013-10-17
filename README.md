@@ -113,6 +113,15 @@ public class PojoJob {
 | **At 03:00**      |    Cron<br/>003?**| At 3:00:00 AM <br/>(0 0 3 ? * *)  |
 | **At ??:40** |  Cron<br/>0 40 * * * ? | At 40 minutes past the hour <br/>(0 40 * * * ?) |
 
+## Glass scheduler expressions with start and end date
+
+| Glass Scheduler      |  Quartz Scheduler | Readable Explanation  |
+| :-------- | :------:| :--: |
+| **Every 30 minutes from 2013-10-10 to 2013-10-12**  | Simple<br/>interval=30m |  repeat forever every 30 minutes   |
+| **0 20 * * * ? from 2013-10-10 14:00:00**     |   Cron |  At 20 minutes past the hour  |
+| **At 03:00 to 2013-11-01**      |    Cron<br/>003?**| At 3:00:00 AM <br/>(0 0 3 ? * *)  |
+| **At ??:40 to 2013-11-01 18:00:00** |  Cron<br/>0 40 * * * ? | At 40 minutes past the hour <br/>(0 40 * * * ?) |
+
 ## Deployment-web.xml
 ```xml
     <filter>
