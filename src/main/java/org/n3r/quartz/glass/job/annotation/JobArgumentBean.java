@@ -32,16 +32,12 @@ public class JobArgumentBean {
     public static List<JobArgumentBean> fromClass(Class<?> jobClass) {
         List<JobArgumentBean> jobArguments = new ArrayList<JobArgumentBean>();
 
-        if (jobClass == null) {
-            return null;
-        }
+        if (jobClass == null) return null;
 
         for (Field field : jobClass.getDeclaredFields()) {
             JobArgument argument = field.getAnnotation(JobArgument.class);
 
-            if (argument != null) {
-                jobArguments.add(new JobArgumentBean(field.getName(), argument));
-            }
+            if (argument != null) jobArguments.add(new JobArgumentBean(field.getName(), argument));
         }
 
         jobArguments.add(new JobArgumentBean(LOG_LEVEL_ARGUMENT, false, "Log level used for this job.",

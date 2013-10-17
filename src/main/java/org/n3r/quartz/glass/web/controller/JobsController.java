@@ -18,7 +18,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -72,7 +75,7 @@ public class JobsController {
         if (job == null) return "redirect:" + configuration.getRoot() + "/jobs";
 
         model.addAttribute("job", new JobWrapperForView(job));
-        model.addAttribute("jobBean", JobBean.fromClass(job.getJobClass()));
+        model.addAttribute("jobBean", JobBean.fromClass(job));
         model.addAttribute("jobArguments", JobArgumentBean.fromClass(job.getJobClass()));
         model.addAttribute("dataMap", JobDataMapUtils.toProperties(job.getJobDataMap()));
 
@@ -139,8 +142,8 @@ public class JobsController {
 
     @RequestMapping(value = "/jobs/{group}/{name}/fire", method = RequestMethod.POST)
     public String fire(HttpServletRequest request,
-                        @PathVariable String group, @PathVariable String name
-                      ) throws SchedulerException {
+                       @PathVariable String group, @PathVariable String name
+    ) throws SchedulerException {
         JobKey jobKey = new JobKey(name, group);
         JobDetail job = scheduler.getJobDetail(jobKey);
 

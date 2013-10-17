@@ -1,7 +1,9 @@
 package org.n3r.quartz.glass.job.annotation;
 
 import org.codehaus.jackson.annotate.JsonProperty;
+import org.n3r.quartz.glass.util.Jobs;
 import org.quartz.DisallowConcurrentExecution;
+import org.quartz.JobDetail;
 import org.quartz.PersistJobDataAfterExecution;
 
 import java.lang.annotation.Annotation;
@@ -38,10 +40,24 @@ public class JobBean {
 
     public static String getDescription(Class<?> jobClass) {
         GlassJob annotation = getAnnotation(jobClass, GlassJob.class);
+        return annotation == null ? "" : annotation.description();
+    }
 
-        if (annotation == null) return "";
+    public static JobBean fromClass(JobDetail jobDetail) {
+        JobBean jobBean = new JobBean();
 
-        return annotation.description();
+        jobBean.description =  getDescription(jobDetail);
+        jobBean.disallowConcurrentExecution = jobDetail.isConcurrentExectionDisallowed();
+        jobBean.persistJobDataAfterExecution = jobDetail.isPersistJobDataAfterExecution();
+        jobBean.arguments = JobArgumentBean.fromClass(Jobs.jobCass(jobDetail));
+
+        return jobBean;
+    }
+
+    private static String getDescription(JobDetail jobDetail) {
+        GlassJob annotation = Jobs.glassJob(jobDetail);
+
+        return annotation == null ? "" : annotation.description();
     }
 
     public static boolean isDisallowConcurrentExecution(Class<?> jobClass) {

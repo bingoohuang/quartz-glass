@@ -9,13 +9,13 @@
     <ul class="jobs">
         <li><a href="$root/logs">logs</a></li>
         <li><a href="$root/configuration">configuration</a></li>
-    </ul>
-    <span class="standby">
+        <li>
         #if ($standby)
             <a onclick="javascript:return(confirm('Are you sure you want to start scheduler ?'));" href="$root/start">start</a>
         #else
             <a onclick="javascript:return(confirm('Are you sure you want to standby scheduler ?'));"
                href="$root/standby">standby</a>
         #end
-    </span>
+        </li>
+    </ul>
 </div>

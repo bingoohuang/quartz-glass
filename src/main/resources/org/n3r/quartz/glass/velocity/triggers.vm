@@ -69,7 +69,7 @@
 ##                    </td>
                 </tr>
                 <tr>
-                    <td colspan="8">
+                    <td colspan="10">
                         <span class="code">$format.dataMap($trigger.dataMap)</span>
                     </td>
                 </tr>
