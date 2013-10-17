@@ -14,7 +14,7 @@ public class PojoJob {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        JobLogs.info("XXXXXXXX淘宝订单同步淘宝订单同步淘宝订单同步淘宝订单同步淘宝订单同步:" + orderType);
+        JobLogs.info("淘宝订单:" + orderType);
     }
 
     public String getOrderType() {

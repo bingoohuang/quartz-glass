@@ -34,12 +34,9 @@ public class TriggersController {
     public String all(Model model) throws SchedulerException {
         List<JobAndTriggers> jobsAndTriggers = new ArrayList<JobAndTriggers>();
 
-
         for (String group : quartzScheduler.getJobGroupNames()) {
             GroupMatcher<JobKey> groupMatcher = groupEquals(group);
-            Set<JobKey> jobKeys = quartzScheduler.getJobKeys(groupMatcher);
-
-            for (JobKey jobKey : jobKeys) {
+            for (JobKey jobKey : quartzScheduler.getJobKeys(groupMatcher)) {
                 JobDetail jobDetail = quartzScheduler.getJobDetail(jobKey);
 
                 JobAndTriggers jobAndTrigger = new JobAndTriggers();
