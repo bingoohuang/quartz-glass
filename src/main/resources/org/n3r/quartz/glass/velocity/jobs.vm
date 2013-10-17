@@ -13,6 +13,7 @@
     <table>
         <thead>
         <tr>
+            <th>#</th>
             <th>Jobkey</th>
             <th>Class</th>
             <th>Desc</th>
@@ -23,8 +24,11 @@
         </tr>
         </thead>
         <tbody>
+            #set($seq = 0)
             #foreach ($job in $jobs)
+                #set( $seq = $seq + 1 )
             <tr>
+                <td style="text-align: center;">$seq</td>
                 <td style="text-align: center;"><a
                         href="$root/jobs/$format.html($job.group)/$format.html($job.name)">$format.html($job.jobKey)</a></td>
                 <td style="text-align: center;">${job.jobClass}</td>

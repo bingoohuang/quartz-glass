@@ -2,7 +2,6 @@
          xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
          version="2.5">
 
-    <!-- utf-8 filter -->
     <filter>
         <filter-name>charsetFilter</filter-name>
         <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
@@ -16,13 +15,13 @@
         <url-pattern>/*</url-pattern>
     </filter-mapping>
 
-    <!-- Spring MVC -->
     <servlet>
         <servlet-name>spring</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>classpath:org/n3r/quartz/glass/springConfig.xml, classpath*:spring*.xml</param-value>
+            <param-value>classpath:org/n3r/quartz/glass/springConfig.xml,
+                classpath*:spring*.xml</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>

@@ -153,6 +153,7 @@ public class GlassTriggerFactoryBean implements FactoryBean<Trigger>, BeanNameAw
         factoryBean.setName(jobKey.getName());
         factoryBean.setTargetObject(defClass.newInstance());
         factoryBean.setTargetMethod(findExecuteMethod(defClass));
+        factoryBean.setConcurrent(false);
         factoryBean.afterPropertiesSet();
 
         JobDetail jobDetail = factoryBean.getObject();
