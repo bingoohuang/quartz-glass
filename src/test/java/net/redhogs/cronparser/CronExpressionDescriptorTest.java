@@ -12,7 +12,7 @@ public class CronExpressionDescriptorTest {
 
     @Test
     public void test1() throws Exception {
-        Assert.assertEquals("At 20 minutes past the hour", CronExpressionDescriptor.getDescription("0 30 8 1/1 * ?"));
+        Assert.assertEquals("At 8:30:00 AM", CronExpressionDescriptor.getDescription("0 30 8 1/1 * ?"));
         Assert.assertEquals("At 20 minutes past the hour", CronExpressionDescriptor.getDescription("0 20 * * * ?"));
     }
 

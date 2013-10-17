@@ -7,7 +7,7 @@ import org.n3r.quartz.glass.job.demo.DummyJob;
 public class JobBeanTest {
     @Test
     public void getDescription() {
-        Assert.assertEquals("Description is not correct", "Dummy job for testing purposes", JobBean.getDescription(DummyJob.class));
+        Assert.assertEquals("Description is not correct", "演示JOB", JobBean.getDescription(DummyJob.class));
     }
 
     @Test
