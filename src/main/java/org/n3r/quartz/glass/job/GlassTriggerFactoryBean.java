@@ -3,10 +3,12 @@ package org.n3r.quartz.glass.job;
 import org.n3r.quartz.glass.job.annotation.GlassJob;
 import org.n3r.quartz.glass.job.util.JobDataMapUtils;
 import org.n3r.quartz.glass.util.GlassConstants;
-import org.n3r.quartz.glass.util.GlassScheduleParser;
+import org.n3r.quartz.glass.util.GlassSchedulerParser;
 import org.n3r.quartz.glass.util.Keys;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
@@ -20,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class GlassTriggerFactoryBean implements FactoryBean<Trigger>, BeanNameAware, InitializingBean {
+    Logger log = LoggerFactory.getLogger(GlassTriggerFactoryBean.class);
+
     @Autowired
     protected Scheduler quartzScheduler;
 
@@ -30,7 +34,6 @@ public class GlassTriggerFactoryBean implements FactoryBean<Trigger>, BeanNameAw
     private String group;
     private String beanName;
     private long startDelay;
-    private Date startTime;
     private String triggerDataMap;
     private String jobDataMap;
 
@@ -73,6 +76,10 @@ public class GlassTriggerFactoryBean implements FactoryBean<Trigger>, BeanNameAw
         this.triggerDataMap = jobDataMap;
     }
 
+    public void setJobDataMap(String jobDataMap) {
+        this.jobDataMap = jobDataMap;
+    }
+
     @Override
     public void setBeanName(String beanName) {
         this.beanName = beanName;
@@ -82,12 +89,6 @@ public class GlassTriggerFactoryBean implements FactoryBean<Trigger>, BeanNameAw
     public void afterPropertiesSet() throws Exception {
         if (this.name == null) this.name = this.beanName;
         if (this.group == null) this.group = Scheduler.DEFAULT_GROUP;
-
-        if (this.startDelay > 0) {
-            this.startTime = new Date(System.currentTimeMillis() + this.startDelay);
-        } else if (this.startTime == null) {
-            this.startTime = new Date();
-        }
 
         // define the job and tie it to our HelloJob class
         Class<?> defClass = Class.forName(jobClass);
@@ -100,15 +101,30 @@ public class GlassTriggerFactoryBean implements FactoryBean<Trigger>, BeanNameAw
 
         jobDetail = addJobSmartly(jobDetail);
 
-        ScheduleBuilder<? extends Trigger> scheduleBuilder = GlassScheduleParser.parse(this.scheduler);
+        GlassSchedulerParser parser = new GlassSchedulerParser(this.scheduler).parse();
+        if (!parser.isToDateInFuture()) {
+            log.warn("ban id {}'s scheduler to date {} expired, ignored", name, parser.getToDateStr());
+            return;
+        }
+
         JobDataMap triggerDataMap = JobDataMapUtils.fromDataMapStr(this.triggerDataMap);
         triggerDataMap.put(GlassConstants.GLASS_SCHEDULER, this.scheduler);
 
-        this.trigger = TriggerBuilder.newTrigger()
-                .withIdentity(name, group)
-                .startAt(startTime)
-                .forJob(jobDetail)
-                .withSchedule(scheduleBuilder)
+        Date startTime = parser.getFromDate();
+        if (this.startDelay > 0) {
+            startTime = new Date(startTime == null
+                    ? System.currentTimeMillis()
+                    : (startTime.getTime() + this.startDelay));
+        }
+
+        TriggerBuilder<Trigger> builder = TriggerBuilder.newTrigger().withIdentity(name, group);
+        if (startTime != null) builder.startAt(startTime);
+
+        Date toDate = parser.getToDate();
+        if (toDate != null) builder.endAt(toDate);
+
+        this.trigger = builder.forJob(jobDetail)
+                .withSchedule(parser.getScheduleBuilder())
                 .usingJobData(triggerDataMap)
                 .build();
 
@@ -198,13 +214,5 @@ public class GlassTriggerFactoryBean implements FactoryBean<Trigger>, BeanNameAw
     @Override
     public boolean isSingleton() {
         return true;
-    }
-
-    public void setQuartzScheduler(Scheduler quartzScheduler) {
-        this.quartzScheduler = quartzScheduler;
-    }
-
-    public void setJobDataMap(String jobDataMap) {
-        this.jobDataMap = jobDataMap;
     }
 }
