@@ -18,6 +18,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.MethodInvoker;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -29,13 +30,14 @@ public class GlassTriggerFactoryBean implements FactoryBean<Trigger>, BeanNameAw
 
     private String scheduler;
     private String jobClass;
-    private Trigger trigger;
     private String name;
-    private String group;
-    private String beanName;
     private long startDelay;
     private String triggerDataMap;
     private String jobDataMap;
+
+    private String group;
+    private Trigger trigger;
+    private String beanName;
 
     /**
      * Specify the trigger's name.
@@ -169,7 +171,7 @@ public class GlassTriggerFactoryBean implements FactoryBean<Trigger>, BeanNameAw
         factoryBean.setName(jobKey.getName());
         factoryBean.setTargetObject(defClass.newInstance());
         factoryBean.setTargetMethod(findExecuteMethod(defClass));
-        factoryBean.setConcurrent(false);
+        factoryBean.setConcurrent(!defClass.isAnnotationPresent(DisallowConcurrentExecution.class));
         factoryBean.afterPropertiesSet();
 
         JobDetail jobDetail = factoryBean.getObject();
@@ -179,11 +181,14 @@ public class GlassTriggerFactoryBean implements FactoryBean<Trigger>, BeanNameAw
     }
 
     private String findExecuteMethod(Class<?> defClass) {
-        Method[] declaredMethods = defClass.getDeclaredMethods();
         ArrayList<Method> candidates = new ArrayList<Method>();
-        for (Method method : declaredMethods) {
+        for (Method method : defClass.getDeclaredMethods()) {
             String methodName = method.getName();
-            if (methodName.startsWith("get") || methodName.startsWith("set")) continue;
+            if (methodName.startsWith("get") || methodName.startsWith("set")) continue; // not setter/getter
+            if (!Modifier.isPublic(method.getModifiers())) continue; // should be public
+            if (Modifier.isStatic(method.getModifiers())) continue; // non static
+            if (method.getParameterTypes().length > 0) continue; // no parameters
+
             candidates.add(method);
         }
 
@@ -191,9 +196,8 @@ public class GlassTriggerFactoryBean implements FactoryBean<Trigger>, BeanNameAw
 
         ArrayList<Method> annotatedCandidates = new ArrayList<Method>();
         for (Method method : candidates) {
-            if (method.getAnnotation(GlassJob.class) != null) {
-                annotatedCandidates.add(method);
-            }
+            if (method.getAnnotation(GlassJob.class) == null) continue;
+            annotatedCandidates.add(method);
         }
 
         if (annotatedCandidates.size() == 1) return annotatedCandidates.get(0).getName();

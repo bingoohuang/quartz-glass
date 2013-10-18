@@ -2,8 +2,9 @@ package org.n3r.quartz.glass.job.demo;
 
 import org.n3r.quartz.glass.job.annotation.GlassJob;
 import org.n3r.quartz.glass.log.joblog.JobLogs;
+import org.quartz.DisallowConcurrentExecution;
 
-
+@DisallowConcurrentExecution
 public class PojoJob {
     private String orderType;
 

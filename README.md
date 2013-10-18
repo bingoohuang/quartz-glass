@@ -81,8 +81,8 @@ public class MyJob implements Job {
 }
 ```
 ### POJO job way:
-The POJO job is defaultly set to disallow concurrent exection and persist job data after execution.
 ```java
+@DisallowConcurrentExecution
 public class PojoJob {
     private String orderType;
 
