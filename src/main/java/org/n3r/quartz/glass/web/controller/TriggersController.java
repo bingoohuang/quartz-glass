@@ -56,7 +56,7 @@ public class TriggersController {
     public String createCronTrigger(@PathVariable String group, @PathVariable String name, Model model) throws SchedulerException {
         JobDetail job = quartzScheduler.getJobDetail(new JobKey(name, group));
 
-        if (job == null) return "redirect:" + configuration.getRoot() + "/jobs";
+        if (job == null) return "redirect:/glass/jobs";
 
         model.addAttribute("form", new NewCronTriggerForm(job));
         model.addAttribute("jobArguments", JobArgumentBean.fromClass(job.getJobClass()));
@@ -69,7 +69,7 @@ public class TriggersController {
                                         @Valid @ModelAttribute("form") NewCronTriggerForm form, BindingResult result, Model model) throws SchedulerException, ParseException {
         JobDetail job = quartzScheduler.getJobDetail(new JobKey(name, group));
 
-        if (job == null) return "redirect:" + configuration.getRoot() + "/jobs";
+        if (job == null) return "redirect:/glass/jobs";
 
         if (result.hasErrors()) {
             model.addAttribute("form", form);
@@ -80,14 +80,14 @@ public class TriggersController {
 
         quartzScheduler.scheduleJob(form.getTrigger());
 
-        return "redirect:" + configuration.getRoot() + "/jobs/{group}/{name}";
+        return "redirect:/glass/jobs/{group}/{name}";
     }
 
     @RequestMapping("/jobs/{group}/{name}/triggers/new-simple")
     public String createSimpleTrigger(@PathVariable String group, @PathVariable String name, Model model) throws SchedulerException {
         JobDetail job = quartzScheduler.getJobDetail(new JobKey(name, group));
 
-        if (job == null) return "redirect:" + configuration.getRoot() + "/jobs";
+        if (job == null) return "redirect:/glass/jobs";
 
         model.addAttribute("form", new NewSimpleTriggerForm(job));
         model.addAttribute("jobArguments", JobArgumentBean.fromClass(job.getJobClass()));
@@ -99,7 +99,7 @@ public class TriggersController {
     public String postCreateSimpleTrigger(@PathVariable String group, @PathVariable String name, @Valid @ModelAttribute("form") NewSimpleTriggerForm form, BindingResult result, Model model) throws SchedulerException, ParseException {
         JobDetail job = quartzScheduler.getJobDetail(new JobKey(name, group));
 
-        if (job == null) return "redirect:" + configuration.getRoot() + "/jobs";
+        if (job == null) return "redirect:/glass/jobs";
 
         if (result.hasErrors()) {
             model.addAttribute("form", form);
@@ -110,18 +110,18 @@ public class TriggersController {
 
         quartzScheduler.scheduleJob(form.getTrigger());
 
-        return "redirect:" + configuration.getRoot() + "/jobs/{group}/{name}";
+        return "redirect:/glass/jobs/{group}/{name}";
     }
 
     @RequestMapping("/jobs/{group}/{name}/triggers/{triggerGroup}/{triggerName}/edit")
     public String edit(@PathVariable String group, @PathVariable String name, @PathVariable String triggerGroup, @PathVariable String triggerName, Model model) throws SchedulerException {
         JobDetail job = quartzScheduler.getJobDetail(new JobKey(name, group));
 
-        if (job == null) return "redirect:" + configuration.getRoot() + "/jobs";
+        if (job == null) return "redirect:/glass/jobs";
 
         Trigger trigger = quartzScheduler.getTrigger(new TriggerKey(triggerName, triggerGroup));
 
-        if (trigger == null) return "redirect:" + configuration.getRoot() + "/jobs/{group}/{name}";
+        if (trigger == null) return "redirect:/glass/jobs/{group}/{name}";
 
         model.addAttribute("trigger", trigger);
         model.addAttribute("jobArguments", JobArgumentBean.fromClass(job.getJobClass()));
@@ -151,7 +151,7 @@ public class TriggersController {
     public String delete(@PathVariable String group, @PathVariable String name, @PathVariable String triggerGroup, @PathVariable String triggerName, @RequestParam(required = false) String redirect) throws SchedulerException {
         JobDetail job = quartzScheduler.getJobDetail(new JobKey(name, group));
 
-        if (job == null) return "redirect:" + configuration.getRoot() + "/jobs";
+        if (job == null) return "redirect:/glass/jobs";
 
         quartzScheduler.unscheduleJob(new TriggerKey(triggerName, triggerGroup));
 
@@ -164,7 +164,7 @@ public class TriggersController {
     public String pause(@PathVariable String group, @PathVariable String name, @PathVariable String triggerGroup, @PathVariable String triggerName, @RequestParam(required = false) String redirect) throws SchedulerException {
         JobDetail job = quartzScheduler.getJobDetail(new JobKey(name, group));
 
-        if (job == null) return "redirect:" + configuration.getRoot() + "/jobs";
+        if (job == null) return "redirect:/glass/jobs";
 
         quartzScheduler.pauseTrigger(new TriggerKey(triggerName, triggerGroup));
 
@@ -177,7 +177,7 @@ public class TriggersController {
     public String resume(@PathVariable String group, @PathVariable String name, @PathVariable String triggerGroup, @PathVariable String triggerName, @RequestParam(required = false) String redirect) throws SchedulerException {
         JobDetail job = quartzScheduler.getJobDetail(new JobKey(name, group));
 
-        if (job == null) return "redirect:" + configuration.getRoot() + "/jobs";
+        if (job == null) return "redirect:/glass/jobs";
 
         quartzScheduler.resumeTrigger(new TriggerKey(triggerName, triggerGroup));
 
@@ -189,11 +189,11 @@ public class TriggersController {
     private String postEditTrigger(String group, String name, String triggerGroup, String triggerName, TriggerForm form, Model model, BindingResult result) throws SchedulerException, ParseException {
         JobDetail job = quartzScheduler.getJobDetail(new JobKey(name, group));
 
-        if (job == null) return "redirect:" + configuration.getRoot() + "/jobs";
+        if (job == null) return "redirect:/glass/jobs";
 
         Trigger trigger = quartzScheduler.getTrigger(new TriggerKey(triggerName, triggerGroup));
 
-        if (trigger == null) return "redirect:" + configuration.getRoot() + "/jobs/{group}/{name}";
+        if (trigger == null) return "redirect:/glass/jobs/{group}/{name}";
 
         if (result.hasErrors()) {
             model.addAttribute("trigger", trigger);
@@ -208,6 +208,6 @@ public class TriggersController {
 
         quartzScheduler.rescheduleJob(trigger.getKey(), form.getTrigger(trigger));
 
-        return "redirect:" + configuration.getRoot() + "/jobs/{group}/{name}";
+        return "redirect:/glass/jobs/{group}/{name}";
     }
 }

@@ -59,6 +59,6 @@ public class LogsController {
         JobLogs.clear();
         executions.clear();
 
-        return "redirect:" + configuration.getRoot() + "/logs";
+        return "redirect:/glass/logs";
     }
 }

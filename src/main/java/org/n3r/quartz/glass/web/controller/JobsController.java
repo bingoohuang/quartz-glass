@@ -72,7 +72,7 @@ public class JobsController {
                       @PathVariable String name, Model model) throws SchedulerException {
         JobDetail job = scheduler.getJobDetail(new JobKey(name, group));
 
-        if (job == null) return "redirect:" + configuration.getRoot() + "/jobs";
+        if (job == null) return "redirect:/glass/jobs";
 
         model.addAttribute("job", new JobWrapperForView(job));
         model.addAttribute("jobBean", JobBean.fromClass(job));
@@ -99,7 +99,7 @@ public class JobsController {
 
         scheduler.addJob(form.getJobDetails(), true);
 
-        return "redirect:" + configuration.getRoot() + "/jobs/" + form.getGroup() + "/" + form.getName();
+        return "redirect:/glass/jobs/" + form.getGroup() + "/" + form.getName();
     }
 
     @RequestMapping("/jobs/{group}/{name}/edit")
@@ -107,7 +107,7 @@ public class JobsController {
                             @PathVariable String name, Model model) throws SchedulerException {
         JobDetail job = scheduler.getJobDetail(new JobKey(name, group));
 
-        if (job == null) return "redirect:" + configuration.getRoot() + "/jobs";
+        if (job == null) return "redirect:/glass/jobs";
 
         return form(model, new JobForm(job), job.getJobClass());
     }
@@ -118,7 +118,7 @@ public class JobsController {
                                 BindingResult bindingResult, Model model) throws SchedulerException {
         JobDetail job = scheduler.getJobDetail(new JobKey(name, group));
 
-        if (job == null) return "redirect:" + configuration.getRoot() + "/jobs";
+        if (job == null) return "redirect:/glass/jobs";
 
         if (bindingResult.hasErrors()) {
             return form(model, form, job.getJobClass());
@@ -126,18 +126,18 @@ public class JobsController {
 
         scheduler.addJob(form.getJobDetails(job), true);
 
-        return "redirect:" + configuration.getRoot() + "/jobs/{group}/{name}";
+        return "redirect:/glass/jobs/{group}/{name}";
     }
 
     @RequestMapping("/jobs/{group}/{name}/delete")
     public String delete(@PathVariable String group, @PathVariable String name) throws SchedulerException {
         JobDetail job = scheduler.getJobDetail(new JobKey(name, group));
 
-        if (job == null) return "redirect:" + configuration.getRoot() + "/jobs";
+        if (job == null) return "redirect:/glass/jobs";
 
         scheduler.deleteJob(job.getKey());
 
-        return "redirect:" + configuration.getRoot() + "/jobs";
+        return "redirect:/glass/jobs";
     }
 
     @RequestMapping(value = "/jobs/{group}/{name}/fire", method = RequestMethod.POST)
@@ -147,7 +147,7 @@ public class JobsController {
         JobKey jobKey = new JobKey(name, group);
         JobDetail job = scheduler.getJobDetail(jobKey);
 
-        if (job == null) return "redirect:" + configuration.getRoot() + "/jobs";
+        if (job == null) return "redirect:/glass/jobs";
 
         String fireJobMap = request.getParameter("fireJobMap");
         // scheduler.triggerJob(job.getKey());
@@ -160,7 +160,7 @@ public class JobsController {
 
         scheduler.scheduleJob(trigger);
 
-        return "redirect:" + configuration.getRoot() + "/jobs/{group}/{name}";
+        return "redirect:/glass/jobs/{group}/{name}";
     }
 
     private String form(Model model, NewJobForm form) {

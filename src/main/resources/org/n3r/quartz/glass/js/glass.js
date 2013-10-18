@@ -1,6 +1,3 @@
-var SERVICE_URL = '/glass/jsapi/jobs/description';
-var LOGS_SERVICE_URL = '/glass/jsapi/logs';
-
 /**
  * Proposes a job name.
  */

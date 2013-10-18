@@ -3,4 +3,8 @@
 
 <link rel="stylesheet" href="$root/css/style.css" type="text/css" charset="utf-8"/>
 <script type="text/javascript" src="$root/js/jquery-1.6.2.min.js"></script>
+<script type="text/javascript">
+var SERVICE_URL = '$root/jsapi/jobs/description';
+var LOGS_SERVICE_URL = '$root/jsapi/logs';
+</script>
 <script type="text/javascript" src="$root/js/glass.js"></script>

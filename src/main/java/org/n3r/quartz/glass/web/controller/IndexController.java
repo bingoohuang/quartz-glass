@@ -62,38 +62,38 @@ public class IndexController {
     public String start() throws SchedulerException {
         quartzScheduler.start();
 
-        return "redirect:" + configuration.getRoot() + "/";
+        return "redirect:/glass/";
     }
 
     @RequestMapping("/standby")
     public String standby() throws SchedulerException {
         quartzScheduler.standby();
 
-        return "redirect:" + configuration.getRoot() + "/";
+        return "redirect:/glass/";
     }
 
     @RequestMapping("/restartTrigger")
     public String restartTrigger(String group, String name) throws SchedulerException {
         Trigger trigger = quartzScheduler.getTrigger(new TriggerKey(name, group));
 
-        if (trigger == null) return "redirect:" + configuration.getRoot() + "/";
+        if (trigger == null) return "redirect:/glass/";
 
         trigger = trigger.getTriggerBuilder().startAt(new Date()).build();
 
         quartzScheduler.rescheduleJob(trigger.getKey(), trigger);
 
-        return "redirect:" + configuration.getRoot() + "/";
+        return "redirect:/glass/";
     }
 
     @RequestMapping("/interrupt")
     public String interrupt(String group, String name) throws SchedulerException {
         JobDetail job = quartzScheduler.getJobDetail(new JobKey(name, group));
 
-        if (job == null) return "redirect:" + configuration.getRoot() + "/";
+        if (job == null) return "redirect:/glass/";
 
         quartzScheduler.interrupt(job.getKey());
 
-        return "redirect:" + configuration.getRoot() + "/";
+        return "redirect:/glass/";
     }
 
     private boolean isPaused(Trigger trigger) throws SchedulerException {
