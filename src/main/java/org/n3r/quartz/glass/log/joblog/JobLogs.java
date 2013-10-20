@@ -35,7 +35,7 @@ public class JobLogs {
      */
     public static void setLevel(String level) {
         if (StringUtils.isEmpty(level)) {
-            setLevel(JobLogLevel.WARN);
+            setLevel(JobLogLevel.INFO);
 
             return;
         }

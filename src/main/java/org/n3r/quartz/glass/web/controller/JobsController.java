@@ -25,10 +25,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * All currently defined jobs and services around form list.
@@ -53,14 +50,25 @@ public class JobsController {
         List<JobWrapperForView> jobWrapperForViews = new ArrayList<JobWrapperForView>();
 
         List<String> groups = scheduler.getJobGroupNames();
-        Collections.sort(groups);
         for (String group : groups) {
             Set<JobKey> jobKeys = scheduler.getJobKeys(GroupMatcher.<JobKey>groupEquals(group));
 
             for (JobKey jobKey : jobKeys) {
-                jobWrapperForViews.add(new JobWrapperForView(scheduler.getJobDetail(jobKey)));
+                jobWrapperForViews.add(new JobWrapperForView(scheduler, jobKey));
             }
         }
+
+        Collections.sort(jobWrapperForViews, new Comparator<JobWrapperForView>() {
+            @Override
+            public int compare(JobWrapperForView o1, JobWrapperForView o2) {
+                if (!o1.getGroup().equals(o2.getGroup())) return o1.getGroup().compareTo(o2.getGroup());
+
+                int diff = o2.getTriggersNum() - o1.getTriggersNum();
+                if (diff != 0) return diff;
+
+                return o1.getName().compareTo(o2.getName());
+            }
+        });
 
         model.addAttribute("jobs", jobWrapperForViews);
 

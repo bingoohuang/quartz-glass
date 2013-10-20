@@ -2,8 +2,8 @@
     <span class="title">Glass</span>
     <ul class="items">
         <li><a href="$root/">dashboard</a></li>
-        <li><a href="$root/jobs">defined jobs</a></li>
-        <li><a href="$root/triggers">defined triggers</a></li>
+        <li><a href="$root/jobs">jobs</a></li>
+        <li><a href="$root/triggers">triggers</a></li>
         <li><a href="$root/jobs/new">add job</a></li>
     </ul>
     <ul class="jobs">

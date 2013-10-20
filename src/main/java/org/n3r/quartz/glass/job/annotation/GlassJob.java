@@ -19,7 +19,7 @@ public @interface GlassJob {
     /**
      * Default job log level
      */
-    JobLogLevel logLevel() default JobLogLevel.WARN;
+    JobLogLevel logLevel() default JobLogLevel.INFO;
 
     /**
      * dev team name

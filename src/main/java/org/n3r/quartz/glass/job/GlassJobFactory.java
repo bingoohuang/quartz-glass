@@ -54,7 +54,7 @@ public class GlassJobFactory implements JobFactory {
         pvs.addPropertyValues(bundle.getTrigger().getJobDataMap());
 
         buildAccessor(targetObject).setPropertyValues(pvs, true);
-    }
+     }
 
     private AbstractPropertyAccessor buildAccessor(Object job) {
         boolean injectType = configuration.getInjectionType() == InjectionType.FIELD;

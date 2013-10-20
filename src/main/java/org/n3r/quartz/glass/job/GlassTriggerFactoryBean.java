@@ -1,25 +1,18 @@
 package org.n3r.quartz.glass.job;
 
-import org.n3r.quartz.glass.job.annotation.GlassJob;
 import org.n3r.quartz.glass.job.util.JobDataMapUtils;
 import org.n3r.quartz.glass.util.GlassConstants;
 import org.n3r.quartz.glass.util.GlassSchedulerParser;
-import org.n3r.quartz.glass.util.Keys;
+import org.n3r.quartz.glass.web.util.JobAdder;
 import org.quartz.*;
-import org.quartz.impl.matchers.GroupMatcher;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean;
 import org.springframework.util.Assert;
-import org.springframework.util.MethodInvoker;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Date;
 
 public class GlassTriggerFactoryBean implements FactoryBean<Trigger>, BeanNameAware, InitializingBean {
@@ -92,16 +85,6 @@ public class GlassTriggerFactoryBean implements FactoryBean<Trigger>, BeanNameAw
         if (this.name == null) this.name = this.beanName;
         if (this.group == null) this.group = Scheduler.DEFAULT_GROUP;
 
-        // define the job and tie it to our HelloJob class
-        Class<?> defClass = Class.forName(jobClass);
-        JobKey jobKey = JobKey.jobKey(defClass.getSimpleName() + Keys.nextJobIndexPostfix(), group);
-        JobDataMap jobDataMap = JobDataMapUtils.fromDataMapStr(this.jobDataMap);
-
-        JobDetail jobDetail = Job.class.isAssignableFrom(defClass)
-                ? createNormalJobDetail(defClass, jobKey, jobDataMap)
-                : methodExecuterJobDetail(defClass, jobKey, jobDataMap);
-
-        jobDetail = addJobSmartly(jobDetail);
 
         GlassSchedulerParser parser = new GlassSchedulerParser(this.scheduler).parse();
         if (!parser.isToDateInFuture()) {
@@ -125,6 +108,8 @@ public class GlassTriggerFactoryBean implements FactoryBean<Trigger>, BeanNameAw
         Date toDate = parser.getToDate();
         if (toDate != null) builder.endAt(toDate);
 
+        JobDetail jobDetail = JobAdder.createJobDetail(quartzScheduler, jobClass, group, jobDataMap);
+
         this.trigger = builder.forJob(jobDetail)
                 .withSchedule(parser.getScheduleBuilder())
                 .usingJobData(triggerDataMap)
@@ -133,77 +118,6 @@ public class GlassTriggerFactoryBean implements FactoryBean<Trigger>, BeanNameAw
         this.quartzScheduler.scheduleJob(this.trigger);
     }
 
-    private JobDetail addJobSmartly(JobDetail thisJobDetail) throws SchedulerException {
-        for (String jobGroup : quartzScheduler.getJobGroupNames()) {
-            if (!jobGroup.equals(this.group)) continue;
-
-            for (JobKey jobKey : quartzScheduler.getJobKeys(GroupMatcher.<JobKey>groupEquals(group))) {
-                JobDetail jobDetail = quartzScheduler.getJobDetail(jobKey);
-                if (jobDetail.getJobClass() != thisJobDetail.getJobClass()) continue;
-
-                MethodInvoker methodInvoker = (MethodInvoker) jobDetail.getJobDataMap().get(GlassConstants.METHOD_INVOKER);
-                MethodInvoker thisInvoker = (MethodInvoker) thisJobDetail.getJobDataMap().get(GlassConstants.METHOD_INVOKER);
-                // check whether the job datamap is equal
-                if (methodInvoker == null && thisInvoker == null
-                        && jobDetail.getJobDataMap().equals(thisJobDetail.getJobDataMap())) return jobDetail;
-                else if (methodInvoker != null && thisInvoker != null
-                        && methodInvoker.getTargetClass() == thisInvoker.getTargetClass()
-                        && jobDetail.getJobDataMap().equals(thisJobDetail.getJobDataMap())) return jobDetail;
-            }
-        }
-
-        quartzScheduler.addJob(thisJobDetail, false);
-        return thisJobDetail;
-    }
-
-    @SuppressWarnings("unchecked")
-    private JobDetail createNormalJobDetail(Class<?> defClass, JobKey jobKey, JobDataMap jobDataMapping) {
-        return JobBuilder.newJob((Class<? extends Job>) defClass)
-                .withIdentity(jobKey)
-                .usingJobData(jobDataMapping)
-                .storeDurably()
-                .build();
-    }
-
-    private JobDetail methodExecuterJobDetail(Class<?> defClass, JobKey jobKey, JobDataMap jobDataMapping) throws Exception {
-        MethodInvokingJobDetailFactoryBean factoryBean = new MethodInvokingJobDetailFactoryBean();
-        factoryBean.setGroup(jobKey.getGroup());
-        factoryBean.setName(jobKey.getName());
-        factoryBean.setTargetObject(defClass.newInstance());
-        factoryBean.setTargetMethod(findExecuteMethod(defClass));
-        factoryBean.setConcurrent(!defClass.isAnnotationPresent(DisallowConcurrentExecution.class));
-        factoryBean.afterPropertiesSet();
-
-        JobDetail jobDetail = factoryBean.getObject();
-        jobDetail.getJobDataMap().putAll(jobDataMapping);
-
-        return jobDetail;
-    }
-
-    private String findExecuteMethod(Class<?> defClass) {
-        ArrayList<Method> candidates = new ArrayList<Method>();
-        for (Method method : defClass.getDeclaredMethods()) {
-            String methodName = method.getName();
-            if (methodName.startsWith("get") || methodName.startsWith("set")) continue; // not setter/getter
-            if (!Modifier.isPublic(method.getModifiers())) continue; // should be public
-            if (Modifier.isStatic(method.getModifiers())) continue; // non static
-            if (method.getParameterTypes().length > 0) continue; // no parameters
-
-            candidates.add(method);
-        }
-
-        if (candidates.size() == 1) return candidates.get(0).getName();
-
-        ArrayList<Method> annotatedCandidates = new ArrayList<Method>();
-        for (Method method : candidates) {
-            if (method.getAnnotation(GlassJob.class) == null) continue;
-            annotatedCandidates.add(method);
-        }
-
-        if (annotatedCandidates.size() == 1) return annotatedCandidates.get(0).getName();
-
-        throw new RuntimeException(defClass + " is not a valid job class");
-    }
 
     @Override
     public Trigger getObject() throws Exception {

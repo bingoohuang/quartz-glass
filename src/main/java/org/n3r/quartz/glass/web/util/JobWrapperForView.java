@@ -5,9 +5,7 @@ import org.n3r.quartz.glass.job.util.JobDataMapUtils;
 import org.n3r.quartz.glass.util.GlassConstants;
 import org.n3r.quartz.glass.util.Jobs;
 import org.n3r.quartz.glass.util.Keys;
-import org.quartz.Job;
-import org.quartz.JobDetail;
-import org.quartz.JobKey;
+import org.quartz.*;
 import org.springframework.util.MethodInvoker;
 
 import java.lang.reflect.Method;
@@ -16,6 +14,7 @@ public class JobWrapperForView {
     private String group;
     private String name;
     private String jobKey;
+    private int triggersNum;
     private String jobClass;
     private String jobDesc;
     private String jobTeam;
@@ -33,6 +32,11 @@ public class JobWrapperForView {
         descJob(jobDetail);
 
         jobDataMap = JobDataMapUtils.toProperties(jobDetail.getJobDataMap());
+    }
+
+    public JobWrapperForView(Scheduler scheduler, JobKey jobKey) throws SchedulerException {
+        this(scheduler.getJobDetail(jobKey));
+        triggersNum = scheduler.getTriggersOfJob(jobKey).size();
     }
 
     private void descJob(JobDetail jobDetail) {
@@ -108,5 +112,9 @@ public class JobWrapperForView {
 
     public void setJobDataMap(String jobDataMap) {
         this.jobDataMap = jobDataMap;
+    }
+
+    public int getTriggersNum() {
+        return triggersNum;
     }
 }

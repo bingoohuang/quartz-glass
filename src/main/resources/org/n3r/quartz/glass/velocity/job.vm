@@ -66,14 +66,14 @@
     <table>
         <thead>
         <tr>
-            <th>Type</th>
+##            <th>Type</th>
             <th>TriggerKey</th>
             <th>Glass Scheduler</th>
+            <th>Explanation</th>
             <th>Start time</th>
             <th>End time</th>
-            <th>Last fire time</th>
-            <th>Next fire time</th>
-            <th>Explanation</th>
+            <th>Last fire</th>
+            <th>Next fire</th>
             <th>Pause / Resume</th>
             <th>Delete</th>
         </tr>
@@ -81,11 +81,12 @@
         <tbody>
             #foreach ($trigger in $triggers)
             <tr>
-                <td style="text-align: center;">$format.html($trigger.type)</td>
+##                <td style="text-align: center;">$format.html($trigger.type)</td>
                 <td>
                     <a href="$root/jobs/$format.html($job.group)/$format.html($job.name)/triggers/$format.html($trigger.group)/$format.html($trigger.name)/edit">$format.html($trigger.triggerKey)</a>
                 </td>
                 <td style="text-align: center;">$trigger.glassScheduler</td>
+                <td style="text-align: center;">${trigger.planification}</td>
                 <td style="text-align: center;">
                     $format.date($trigger.startTime)
                     #if ($trigger.running) &nbsp;<span style="color: red;">running</span> #end
@@ -93,7 +94,6 @@
                 <td style="text-align: center;">$format.date($trigger.endTime)</td>
                 <td style="text-align: center;">$format.date($trigger.previousFireTime)</td>
                 <td style="text-align: center;">$format.date($trigger.nextFireTime)</td>
-                <td style="text-align: center;">${trigger.planification}</td>
                 <td style="text-align: center;">
                     #if ($trigger.paused)
                         <a onclick="javascript:return(confirm('Are you sure you want to resume ?'));"

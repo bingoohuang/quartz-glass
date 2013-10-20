@@ -15,6 +15,7 @@
         <tr>
             <th>#</th>
             <th>Jobkey</th>
+            <th>triggers</th>
             <th>Class</th>
             <th>Desc</th>
             <th>Team</th>
@@ -31,6 +32,7 @@
                 <td style="text-align: center;">$seq</td>
                 <td style="text-align: center;"><a
                         href="$root/jobs/$format.html($job.group)/$format.html($job.name)">$format.html($job.jobKey)</a></td>
+                <td style="text-align: center;">${job.triggersNum}</td>
                 <td style="text-align: center;">${job.jobClass}</td>
                 <td style="text-align: center;">$format.html(${job.jobDesc})</td>
                 <td style="text-align: center;">$format.html(${job.jobTeam})</td>

@@ -14,15 +14,15 @@
         <thead>
         <tr>
             <th>#</th>
-            <th>Type</th>
+##            <th>Type</th>
             <th>JobKey</th>
             <th>TriggerKey</th>
             <th>Glass Scheduler</th>
+            <th>Explanation</th>
             <th>Start time</th>
             <th>End time</th>
             <th>Last fire</th>
             <th>Next fire</th>
-            <th>Explanation</th>
             <th>Pause / Resume</th>
 ##            <th>Delete</th>
         </tr>
@@ -35,11 +35,12 @@
                     #set( $seq = $seq + 1 )
                 <tr>
                     <td style="text-align: center;">$seq</td>
-                    <td style="text-align: center;">$format.html($trigger.type)</td>
+##                    <td style="text-align: center;">$format.html($trigger.type)</td>
                     <td style="text-align: center;"><a
                             href="$root/jobs/$format.html($job.group)/$format.html($job.name)">$format.descKey($job.key)</a></td>
                     <td style="text-align: center;">$format.html($trigger.triggerKey)</td>
                     <td style="text-align: center;">$trigger.glassScheduler</td>
+                    <td style="text-align: center;">$trigger.planification</td>
 
                     <td style="text-align: center;">
                         $format.date($trigger.startTime)
@@ -48,7 +49,6 @@
                     <td style="text-align: center;">$format.date($trigger.endTime)</td>
                     <td style="text-align: center;">$format.date($trigger.previousFireTime)</td>
                     <td style="text-align: center;">$format.date($trigger.nextFireTime)</td>
-                    <td style="text-align: center;">$trigger.planification</td>
                     <td style="text-align: center;">
                         #if ($trigger.paused)
                             <a onclick="javascript:return(confirm('Are you sure you want to resume ?'));"
