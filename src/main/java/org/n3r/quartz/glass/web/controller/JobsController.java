@@ -25,23 +25,22 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.List;
 
 /**
  * All currently defined jobs and services around form list.
  */
 @Controller
 public class JobsController {
-
     @Autowired
     protected Scheduler scheduler;
-
     @Autowired
     protected Configuration configuration;
-
     @Autowired
     protected JobPathScanner jobPathScanner;
-
     @Autowired
     protected JobExecutions executions;
 
@@ -51,22 +50,21 @@ public class JobsController {
 
         List<String> groups = scheduler.getJobGroupNames();
         for (String group : groups) {
-            Set<JobKey> jobKeys = scheduler.getJobKeys(GroupMatcher.<JobKey>groupEquals(group));
-
-            for (JobKey jobKey : jobKeys) {
+            for (JobKey jobKey : scheduler.getJobKeys(GroupMatcher.<JobKey>groupEquals(group))) {
                 jobWrapperForViews.add(new JobWrapperForView(scheduler, jobKey));
             }
         }
 
+        // order triggerNum desc, group, name
         Collections.sort(jobWrapperForViews, new Comparator<JobWrapperForView>() {
             @Override
             public int compare(JobWrapperForView o1, JobWrapperForView o2) {
-                if (!o1.getGroup().equals(o2.getGroup())) return o1.getGroup().compareTo(o2.getGroup());
-
                 int diff = o2.getTriggersNum() - o1.getTriggersNum();
                 if (diff != 0) return diff;
 
-                return o1.getName().compareTo(o2.getName());
+                return o1.getGroup().equals(o2.getGroup())
+                        ? o1.getName().compareTo(o2.getName())
+                        : o1.getGroup().compareTo(o2.getGroup());
             }
         });
 
@@ -128,9 +126,7 @@ public class JobsController {
 
         if (job == null) return "redirect:/glass/jobs";
 
-        if (bindingResult.hasErrors()) {
-            return form(model, form, job.getJobClass());
-        }
+        if (bindingResult.hasErrors()) return form(model, form, job.getJobClass());
 
         scheduler.addJob(form.getJobDetails(job), true);
 
@@ -150,8 +146,7 @@ public class JobsController {
 
     @RequestMapping(value = "/jobs/{group}/{name}/fire", method = RequestMethod.POST)
     public String fire(HttpServletRequest request,
-                       @PathVariable String group, @PathVariable String name
-    ) throws SchedulerException {
+                       @PathVariable String group, @PathVariable String name) throws SchedulerException {
         JobKey jobKey = new JobKey(name, group);
         JobDetail job = scheduler.getJobDetail(jobKey);
 

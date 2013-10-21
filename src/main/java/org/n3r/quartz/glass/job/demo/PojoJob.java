@@ -17,12 +17,4 @@ public class PojoJob {
         }
         JobLogs.info("淘宝订单:" + orderType);
     }
-
-    public String getOrderType() {
-        return orderType;
-    }
-
-    public void setOrderType(String orderType) {
-        this.orderType = orderType;
-    }
 }
