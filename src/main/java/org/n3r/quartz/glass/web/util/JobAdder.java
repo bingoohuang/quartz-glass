@@ -1,6 +1,5 @@
 package org.n3r.quartz.glass.web.util;
 
-import org.n3r.quartz.glass.job.annotation.GlassJob;
 import org.n3r.quartz.glass.job.util.JobDataMapUtils;
 import org.n3r.quartz.glass.util.GlassConstants;
 import org.n3r.quartz.glass.util.Keys;
@@ -95,13 +94,9 @@ public class JobAdder {
 
         if (candidates.size() == 1) return candidates.get(0).getName();
 
-        ArrayList<Method> annotatedCandidates = new ArrayList<Method>();
         for (Method method : candidates) {
-            if (method.getAnnotation(GlassJob.class) == null) continue;
-            annotatedCandidates.add(method);
+            if (method.getName().equals("execute") || method.getName().equals("run")) return method.getName();
         }
-
-        if (annotatedCandidates.size() == 1) return annotatedCandidates.get(0).getName();
 
         throw new RuntimeException(defClass + " is not a valid job class");
     }

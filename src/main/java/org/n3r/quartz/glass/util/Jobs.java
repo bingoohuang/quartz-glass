@@ -20,8 +20,8 @@ public class Jobs {
         if (methodInvoker == null) return jobDetail.getJobClass().getAnnotation(GlassJob.class);
 
         Method targetMethod = methodInvoker.getPreparedMethod();
-        GlassJob glassJob = targetMethod.getAnnotation(GlassJob.class);
-        if (glassJob != null) return glassJob;
+//        GlassJob glassJob = targetMethod.getAnnotation(GlassJob.class);
+//        if (glassJob != null) return glassJob;
 
         return targetMethod.getDeclaringClass().getAnnotation(GlassJob.class);
     }
