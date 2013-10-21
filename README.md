@@ -87,10 +87,10 @@ public class MyJob implements Job {
 ### POJO job way:
 ```java
 @DisallowConcurrentExecution
+@GlassJob(description = "淘宝订单同步", team = "小牛队", created = "2013-10-16")
 public class PojoJob {
     private String orderType;
 
-    @GlassJob(description = "淘宝订单同步", team = "小牛队", created = "2013-10-16")
     public void execute() {
         try {
             Thread.sleep(10000);
