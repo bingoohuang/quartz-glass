@@ -28,6 +28,10 @@ The main changes include:
 
 ## Spring XML for a quartz-glass job examples
 ```xml
+    <bean id="demoJobScanner" class="org.n3r.quartz.glass.web.util.JobsScanner">
+        <property name="basePackage" value="org.n3r.quartz.glass.job.demo, org.n3r.demo"/>
+    </bean>
+
   <bean id="MyJob每30分钟" class="org.n3r.quartz.glass.job.GlassTriggerFactoryBean">
         <property name="jobClass" value="org.n3r.quartz.glass.job.demo.MyJob"/>
         <property name="scheduler" value="Every 30 minutes"/>
