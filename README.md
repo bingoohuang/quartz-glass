@@ -123,23 +123,26 @@ public class PojoJob {
 | **At ??:40 to 2013-11-01 18:00:00** |  Cron<br/>0 40 * * * ? | At 40 minutes past the hour <br/>(0 40 * * * ?) |
 
 ## Deployment [web.xml](https://github.com/bingoohuang/quartz-glass-web/blob/master/src/main/webapp/WEB-INF/web.xml)
-    <servlet>
-        <servlet-name>spring</servlet-name>
-        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-        <init-param>
-            <param-name>contextConfigLocation</param-name>
-            <param-value>classpath*:spring/spring*.xml</param-value>
-        </init-param>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>spring</servlet-name>
-        <url-pattern>/glass/*</url-pattern>
-    </servlet-mapping>
 
-    <welcome-file-list>
-        <welcome-file>glass/index</welcome-file>
-    </welcome-file-list>
 ```
+<servlet>
+    <servlet-name>spring</servlet-name>
+    <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+    <init-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath*:spring/spring*.xml</param-value>
+    </init-param>
+</servlet>
+<servlet-mapping>
+    <servlet-name>spring</servlet-name>
+    <url-pattern>/glass/*</url-pattern>
+</servlet-mapping>
+
+<welcome-file-list>
+    <welcome-file>glass/index</welcome-file>
+</welcome-file-list>
+```
+
 > **NOTE:** :
 >
 > - when running in jar/war, classpath*:spring*.xml does not work and the reason can be found in the comments of Spring source [PathMatchingResourcePatternResolver.java](http://docs.spring.io/spring/docs/3.2.4.RELEASE/javadoc-api/org/springframework/core/io/support/PathMatchingResourcePatternResolver.html) as below:
