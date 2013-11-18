@@ -147,6 +147,5 @@ public class PojoJob {
 >
 > - when running in jar/war, classpath*:spring*.xml does not work and the reason can be found in the comments of Spring source [PathMatchingResourcePatternResolver.java](http://docs.spring.io/spring/docs/3.2.4.RELEASE/javadoc-api/org/springframework/core/io/support/PathMatchingResourcePatternResolver.html) as below:
 
-```
 **WARNING**: Note that "classpath*:" when combined with Ant-style patterns will only work reliably with at least one root directory before the pattern starts, unless the actual target files reside in the file system. This means that a pattern like "classpath*:*.xml" will not retrieve files from the root of jar files but rather only from the root of expanded directories. This originates from a limitation in the JDK's ClassLoader.getResources() method which only returns file system locations for a passed-in empty String (indicating potential roots to search).
-```
+
