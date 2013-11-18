@@ -2,18 +2,12 @@ Welcome to Quartz Glass!
 =====================
 
 A simple web ui for **quartz** and jobs simple definition on spring xml configuration.
-
 Thank to [olagache's glass](https://github.com/olagache/glass) and [RedHogs' cron-parser](https://github.com/RedHogs/cron-parser).
-
 This is a jar project by pom.xml defaultly and can be used in a web project like [quartz-glass-web](https://github.com/bingoohuang/quartz-glass-web).
-
 Through the quartz-glass ui, you can list all the jobs and relatives triggers.
-
 Jobs executions also displayed in job detail page.
-
 And job also can be fired right now with specified trigger data map.
-
-And to see more detail, please read QuartzGlass-Intro.pdf.
+To see more detail, please read QuartzGlass-Intro.pdf.
 
 The main changes include:
 
@@ -130,26 +124,13 @@ public class PojoJob {
 
 ## Deployment-web.xml please refer the detail [demo](https://github.com/bingoohuang/quartz-glass-web)
 ```xml
-    <filter>
-        <filter-name>charsetFilter</filter-name>
-        <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
-        <init-param>
-            <param-name>encoding</param-name>
-            <param-value>UTF-8</param-value>
-        </init-param>
-    </filter>
-    <filter-mapping>
-        <filter-name>charsetFilter</filter-name>
-        <url-pattern>/*</url-pattern>
-    </filter-mapping>
-
     <servlet>
         <servlet-name>spring</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
             <param-value>classpath:org/n3r/quartz/glass/springConfig.xml,
-                classpath*:spring*.xml</param-value>
+                classpath*:spring/spring*.xml</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>
@@ -161,4 +142,8 @@ public class PojoJob {
         <welcome-file>glass/index</welcome-file>
     </welcome-file-list>
 ```
+> **NOTE:** :
+>
+> - when running in jar/war, classpath*:spring*.xml does not work and the reason can be found in the comments of Spring source [PathMatchingResourcePatternResolver.java](http://docs.spring.io/spring/docs/3.2.4.RELEASE/javadoc-api/org/springframework/core/io/support/PathMatchingResourcePatternResolver.html),
 
+**WARNING**: Note that "classpath*:" when combined with Ant-style patterns will only work reliably with at least one root directory before the pattern starts, unless the actual target files reside in the file system. This means that a pattern like "classpath*:*.xml" will not retrieve files from the root of jar files but rather only from the root of expanded directories. This originates from a limitation in the JDK's ClassLoader.getResources() method which only returns file system locations for a passed-in empty String (indicating potential roots to search).
