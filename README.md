@@ -122,15 +122,13 @@ public class PojoJob {
 | **At 03:00 to 2013-11-01**      |    Cron<br/>003?**| At 3:00:00 AM <br/>(0 0 3 ? * *)  |
 | **At ??:40 to 2013-11-01 18:00:00** |  Cron<br/>0 40 * * * ? | At 40 minutes past the hour <br/>(0 40 * * * ?) |
 
-## Deployment-web.xml please refer the detail [demo](https://github.com/bingoohuang/quartz-glass-web)
-```xml
+## Deployment [web.xml](https://github.com/bingoohuang/quartz-glass-web/blob/master/src/main/webapp/WEB-INF/web.xml)
     <servlet>
         <servlet-name>spring</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <init-param>
             <param-name>contextConfigLocation</param-name>
-            <param-value>classpath:org/n3r/quartz/glass/springConfig.xml,
-                classpath*:spring/spring*.xml</param-value>
+            <param-value>classpath*:spring/spring*.xml</param-value>
         </init-param>
     </servlet>
     <servlet-mapping>
@@ -144,6 +142,8 @@ public class PojoJob {
 ```
 > **NOTE:** :
 >
-> - when running in jar/war, classpath*:spring*.xml does not work and the reason can be found in the comments of Spring source [PathMatchingResourcePatternResolver.java](http://docs.spring.io/spring/docs/3.2.4.RELEASE/javadoc-api/org/springframework/core/io/support/PathMatchingResourcePatternResolver.html),
+> - when running in jar/war, classpath*:spring*.xml does not work and the reason can be found in the comments of Spring source [PathMatchingResourcePatternResolver.java](http://docs.spring.io/spring/docs/3.2.4.RELEASE/javadoc-api/org/springframework/core/io/support/PathMatchingResourcePatternResolver.html) as below:
 
+```
 **WARNING**: Note that "classpath*:" when combined with Ant-style patterns will only work reliably with at least one root directory before the pattern starts, unless the actual target files reside in the file system. This means that a pattern like "classpath*:*.xml" will not retrieve files from the root of jar files but rather only from the root of expanded directories. This originates from a limitation in the JDK's ClassLoader.getResources() method which only returns file system locations for a passed-in empty String (indicating potential roots to search).
+```
