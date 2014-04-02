@@ -81,8 +81,9 @@ public class JobsController {
         if (job == null) return "redirect:/glass/jobs";
 
         model.addAttribute("job", new JobWrapperForView(job));
-        model.addAttribute("jobBean", JobBean.fromClass(job));
-        model.addAttribute("jobArguments", JobArgumentBean.fromClass(job.getJobClass()));
+        JobBean jobBean = JobBean.fromClass(job);
+        model.addAttribute("jobBean", jobBean);
+        model.addAttribute("jobArguments", jobBean.getArguments());
         model.addAttribute("dataMap", JobDataMapUtils.toProperties(job.getJobDataMap()));
 
         List<? extends Trigger> triggers = scheduler.getTriggersOfJob(job.getKey());

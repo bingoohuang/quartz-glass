@@ -30,9 +30,9 @@ public class JobArgumentBean {
     String[] sampleValues;
 
     public static List<JobArgumentBean> fromClass(Class<?> jobClass) {
-        List<JobArgumentBean> jobArguments = new ArrayList<JobArgumentBean>();
-
         if (jobClass == null) return null;
+
+        List<JobArgumentBean> jobArguments = new ArrayList<JobArgumentBean>();
 
         for (Field field : jobClass.getDeclaredFields()) {
             JobArgument argument = field.getAnnotation(JobArgument.class);

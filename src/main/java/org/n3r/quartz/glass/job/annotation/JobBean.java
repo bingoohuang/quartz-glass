@@ -85,4 +85,8 @@ public class JobBean {
 
         return jobClass.getAnnotation(annotationClass);
     }
+
+    public List<JobArgumentBean> getArguments() {
+        return arguments;
+    }
 }
