@@ -83,6 +83,7 @@ public class MyJob implements Job {
 @DisallowConcurrentExecution
 @GlassJob(description = "淘宝订单同步", team = "小牛队", created = "2013-10-16")
 public class PojoJob {
+    @JobArgument(description = "订单类型")
     private String orderType;
 
     public void execute() {
