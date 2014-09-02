@@ -89,7 +89,7 @@ public class JobsController {
         List<? extends Trigger> triggers = scheduler.getTriggersOfJob(job.getKey());
 
         model.addAttribute("triggers", TriggerWrapperForView.fromList(triggers, scheduler));
-        model.addAttribute("history", executions.find(group, name, Query.index(0).withSize(5)));
+        model.addAttribute("history", executions.find(group, name, Query.index(0).withSize(100)));
 
         return "job";
     }
