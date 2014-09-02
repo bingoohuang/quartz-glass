@@ -5,33 +5,41 @@ import org.n3r.quartz.glass.util.GlassConstants;
 import org.n3r.quartz.glass.util.Keys;
 import org.quartz.*;
 import org.quartz.impl.matchers.GroupMatcher;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean;
+import org.springframework.stereotype.Component;
 import org.springframework.util.MethodInvoker;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 
+import static com.google.common.collect.ImmutableList.of;
+import static org.n3r.quartz.glass.job.util.JobDataMapUtils.jobDataMapEquals;
+
+@Component
 public class JobAdder {
-    public static JobDetail createJobDetail(Scheduler quartzScheduler, String jobClass) throws Exception {
-        return createJobDetail(quartzScheduler, jobClass, Scheduler.DEFAULT_GROUP, "");
+    @Autowired
+    Scheduler quartzScheduler;
+
+    public JobDetail createJobDetail(String jobClass) throws Exception {
+        return createJobDetail(jobClass, Scheduler.DEFAULT_GROUP, "");
     }
 
-    public static JobDetail createJobDetail(Scheduler quartzScheduler, String jobClass, String group,
-                                            String jobDataMapStr) throws Exception {
+    public JobDetail createJobDetail(String jobClass, String group, String jobDataMapStr) throws Exception {
         Class<?> defClass = Class.forName(jobClass);
         JobKey jobKey = JobKey.jobKey(Keys.nextJobIndexPostfix(defClass.getSimpleName()), group);
         JobDataMap jobDataMap = JobDataMapUtils.fromDataMapStr(jobDataMapStr);
 
         JobDetail jobDetail = Job.class.isAssignableFrom(defClass)
-                ? JobAdder.createNormalJobDetail(defClass, jobKey, jobDataMap)
-                : JobAdder.methodExecuterJobDetail(defClass, jobKey, jobDataMap);
+                ? createNormalJobDetail(defClass, jobKey, jobDataMap)
+                : methodExecuteJobDetail(defClass, jobKey, jobDataMap);
 
-        return JobAdder.addJobSmartly(jobDetail, quartzScheduler, group);
+        return addJobSmartly(jobDetail, group);
     }
 
 
-    private static JobDetail addJobSmartly(JobDetail thisJobDetail, Scheduler quartzScheduler, String group) throws SchedulerException {
+    private JobDetail addJobSmartly(JobDetail thisJobDetail, String group) throws SchedulerException {
         for (String jobGroup : quartzScheduler.getJobGroupNames()) {
             if (!jobGroup.equals(group)) continue;
 
@@ -41,14 +49,11 @@ public class JobAdder {
 
                 MethodInvoker methodInvoker = (MethodInvoker) jobDetail.getJobDataMap().get(GlassConstants.METHOD_INVOKER);
                 MethodInvoker thisInvoker = (MethodInvoker) thisJobDetail.getJobDataMap().get(GlassConstants.METHOD_INVOKER);
-                // check whether the job datamap is equal
-                if (methodInvoker == null && thisInvoker == null
-                        && JobDataMapUtils.jobDataMapEquals(jobDetail, thisJobDetail))
-                    return jobDetail;
-                else if (methodInvoker != null && thisInvoker != null
-                        && methodInvoker.getTargetClass() == thisInvoker.getTargetClass()
-                        && JobDataMapUtils.jobDataMapEquals(jobDetail, thisJobDetail))
-                    return jobDetail;
+                // check whether the job data map is equal
+                boolean jobDataMapEquals = jobDataMapEquals(jobDetail, thisJobDetail);
+                if (methodInvoker == null && thisInvoker == null && jobDataMapEquals) return jobDetail;
+                if (methodInvoker != null && thisInvoker != null && jobDataMapEquals
+                        && methodInvoker.getTargetClass() == thisInvoker.getTargetClass()) return jobDetail;
             }
         }
 
@@ -57,7 +62,7 @@ public class JobAdder {
     }
 
     @SuppressWarnings("unchecked")
-    private static JobDetail createNormalJobDetail(Class<?> defClass, JobKey jobKey, JobDataMap jobDataMapping) {
+    private JobDetail createNormalJobDetail(Class<?> defClass, JobKey jobKey, JobDataMap jobDataMapping) {
         return JobBuilder.newJob((Class<? extends Job>) defClass)
                 .withIdentity(jobKey)
                 .usingJobData(jobDataMapping)
@@ -65,13 +70,15 @@ public class JobAdder {
                 .build();
     }
 
-    private static JobDetail methodExecuterJobDetail(Class<?> defClass, JobKey jobKey, JobDataMap jobDataMapping) throws Exception {
+    private JobDetail methodExecuteJobDetail(Class<?> clazz, JobKey jobKey, JobDataMap jobDataMapping) throws Exception {
         MethodInvokingJobDetailFactoryBean factoryBean = new MethodInvokingJobDetailFactoryBean();
         factoryBean.setGroup(jobKey.getGroup());
         factoryBean.setName(jobKey.getName());
-        factoryBean.setTargetObject(defClass.newInstance());
-        factoryBean.setTargetMethod(findExecuteMethod(defClass));
-        factoryBean.setConcurrent(!defClass.isAnnotationPresent(DisallowConcurrentExecution.class));
+
+        factoryBean.setTargetClass(clazz);
+        factoryBean.setTargetMethod(findExecuteMethod(clazz));
+        boolean allowConcurrent = !clazz.isAnnotationPresent(DisallowConcurrentExecution.class);
+        factoryBean.setConcurrent(allowConcurrent);
         factoryBean.afterPropertiesSet();
 
         JobDetail jobDetail = factoryBean.getObject();
@@ -80,7 +87,7 @@ public class JobAdder {
         return jobDetail;
     }
 
-    private static String findExecuteMethod(Class<?> defClass) {
+    private String findExecuteMethod(Class<?> defClass) {
         ArrayList<Method> candidates = new ArrayList<Method>();
         for (Method method : defClass.getDeclaredMethods()) {
             String methodName = method.getName();
@@ -95,7 +102,8 @@ public class JobAdder {
         if (candidates.size() == 1) return candidates.get(0).getName();
 
         for (Method method : candidates) {
-            if (method.getName().equals("execute") || method.getName().equals("run")) return method.getName();
+            String methodName = method.getName();
+            if (of("execute", "run").contains(methodName)) return methodName;
         }
 
         throw new RuntimeException(defClass + " is not a valid job class");

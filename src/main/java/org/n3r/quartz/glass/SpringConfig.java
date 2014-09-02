@@ -1,12 +1,5 @@
 package org.n3r.quartz.glass;
 
-import java.io.IOException;
-import java.util.Locale;
-import java.util.Properties;
-
-import javax.annotation.PostConstruct;
-import javax.sql.DataSource;
-
 import org.apache.velocity.exception.VelocityException;
 import org.n3r.quartz.glass.configuration.Configuration;
 import org.n3r.quartz.glass.configuration.LogStore;
@@ -39,23 +32,25 @@ import org.springframework.web.servlet.view.velocity.VelocityConfig;
 import org.springframework.web.servlet.view.velocity.VelocityConfigurer;
 import org.springframework.web.servlet.view.velocity.VelocityViewResolver;
 
+import javax.annotation.PostConstruct;
+import javax.sql.DataSource;
+import java.io.IOException;
+import java.util.Locale;
+import java.util.Properties;
+
 @org.springframework.context.annotation.Configuration
 @EnableWebMvc
-@ComponentScan(basePackages = { "org.n3r.quartz.glass" })
+@ComponentScan(basePackages = {"org.n3r.quartz.glass"})
 public class SpringConfig extends WebMvcConfigurerAdapter {
-
     public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
-
     public static final String APPLICATION_CONTEXT_KEY = "applicationContext";
 
     @Autowired
-    private GlassJobListener glassJobListener;
-
+    GlassJobListener glassJobListener;
     @Autowired
-    private GlassSchedulerListener glassSchedulerListener;
-
+    GlassSchedulerListener glassSchedulerListener;
     @Autowired
-    private GlassJobFactory glassJobFactory;
+    GlassJobFactory glassJobFactory;
 
     @PostConstruct
     public void initLogStore() throws Exception {
@@ -73,13 +68,10 @@ public class SpringConfig extends WebMvcConfigurerAdapter {
 
     @Bean
     public DataSource dataSource() throws Exception {
-        if (configuration().isInMemory())
-            return null;
+        if (configuration().isInMemory()) return null;
 
         JndiObjectFactoryBean factoryBean = new JndiObjectFactoryBean();
-
         factoryBean.setJndiName("java:comp/env/jdbc/glassDb");
-
         factoryBean.afterPropertiesSet();
 
         return (DataSource) factoryBean.getObject();
@@ -135,7 +127,7 @@ public class SpringConfig extends WebMvcConfigurerAdapter {
     @Bean
     public FixedLocaleResolver fixedLocaleResolver() {
         FixedLocaleResolver resolver = new FixedLocaleResolver();
-        resolver.setDefaultLocale(Locale.FRANCE);
+        resolver.setDefaultLocale(Locale.CHINA);
         return resolver;
     }
 

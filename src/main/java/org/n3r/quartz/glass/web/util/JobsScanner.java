@@ -19,7 +19,9 @@ public class JobsScanner {
     private String basePackage;
 
     @Autowired
-    protected Scheduler scheduler;
+    Scheduler scheduler;
+    @Autowired
+    JobAdder jobAdder;
 
     @PostConstruct
     protected void scanPaths() {
@@ -33,7 +35,7 @@ public class JobsScanner {
                     .omitEmptyStrings().trimResults().split(basePackage);
             for (String bp : basePackages) {
                 for (BeanDefinition definition : provider.findCandidateComponents(bp)) {
-                    JobAdder.createJobDetail(scheduler, definition.getBeanClassName());
+                    jobAdder.createJobDetail(definition.getBeanClassName());
                 }
             }
         } catch (Exception ex) {
