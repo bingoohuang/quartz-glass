@@ -7,10 +7,12 @@ import org.n3r.quartz.glass.job.demo.DummyJob;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.util.List;
 
 @RunWith(SpringJUnit4ClassRunner.class)
+@WebAppConfiguration
 @ContextConfiguration(locations = {"/org/n3r/quartz/glass/spring-context.xml"})
 public class JobPathScannerTest {
 

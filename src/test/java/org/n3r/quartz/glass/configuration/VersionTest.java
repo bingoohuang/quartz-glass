@@ -7,6 +7,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.text.SimpleDateFormat;
 
@@ -16,7 +17,7 @@ import java.text.SimpleDateFormat;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {"/org/n3r/quartz/glass/spring-context.xml"})
-
+@WebAppConfiguration
 public class VersionTest extends TestCase {
 
     private static final String COMPILATION_DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";

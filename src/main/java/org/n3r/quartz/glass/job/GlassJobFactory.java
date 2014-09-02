@@ -24,6 +24,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 @Component
+@SuppressWarnings("unchecked")
 public class GlassJobFactory implements JobFactory {
     @Autowired
     private Configuration configuration;
