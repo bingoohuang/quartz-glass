@@ -2,13 +2,11 @@ package org.n3r.quartz.glass.job.annotation;
 
 import org.n3r.quartz.glass.log.joblog.JobLogLevel;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
-@Retention(RetentionPolicy.RUNTIME)
+@Documented
 @Target({ElementType.TYPE})
+@Retention(RetentionPolicy.RUNTIME)
 public @interface GlassJob {
 
     /**

@@ -11,7 +11,6 @@ import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.util.Assert;
 
 import java.util.Date;
@@ -22,12 +21,10 @@ public class GlassTriggerFactoryBean implements FactoryBean<Trigger>, BeanNameAw
     @Autowired
     protected Scheduler quartzScheduler;
     @Autowired
-    AutowireCapableBeanFactory beanFactory;
-    @Autowired
     JobAdder jobAdder;
 
     private String scheduler;
-    private String jobClass;
+    private Class<?> jobClass;
     private String name;
     private long startDelay;
     private String triggerDataMap;
@@ -55,7 +52,7 @@ public class GlassTriggerFactoryBean implements FactoryBean<Trigger>, BeanNameAw
         this.scheduler = scheduler;
     }
 
-    public void setJobClass(String jobClass) {
+    public void setJobClass(Class<?> jobClass) {
         this.jobClass = jobClass;
     }
 
@@ -89,7 +86,6 @@ public class GlassTriggerFactoryBean implements FactoryBean<Trigger>, BeanNameAw
     public void afterPropertiesSet() throws Exception {
         if (this.name == null) this.name = this.beanName;
         if (this.group == null) this.group = Scheduler.DEFAULT_GROUP;
-
 
         GlassSchedulerParser parser = new GlassSchedulerParser(this.scheduler).parse();
         if (!parser.isToDateInFuture()) {

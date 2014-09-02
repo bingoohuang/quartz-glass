@@ -22,18 +22,17 @@ public class JobAdder {
     @Autowired
     Scheduler quartzScheduler;
 
-    public JobDetail createJobDetail(String jobClass) throws Exception {
+    public JobDetail createJobDetail(Class<?> jobClass) throws Exception {
         return createJobDetail(jobClass, Scheduler.DEFAULT_GROUP, "");
     }
 
-    public JobDetail createJobDetail(String jobClass, String group, String jobDataMapStr) throws Exception {
-        Class<?> defClass = Class.forName(jobClass);
-        JobKey jobKey = JobKey.jobKey(Keys.nextJobIndexPostfix(defClass.getSimpleName()), group);
+    public JobDetail createJobDetail(Class<?> jobClass, String group, String jobDataMapStr) throws Exception {
+        JobKey jobKey = JobKey.jobKey(Keys.nextJobIndexPostfix(jobClass.getSimpleName()), group);
         JobDataMap jobDataMap = JobDataMapUtils.fromDataMapStr(jobDataMapStr);
 
-        JobDetail jobDetail = Job.class.isAssignableFrom(defClass)
-                ? createNormalJobDetail(defClass, jobKey, jobDataMap)
-                : methodExecuteJobDetail(defClass, jobKey, jobDataMap);
+        JobDetail jobDetail = Job.class.isAssignableFrom(jobClass)
+                ? createNormalJobDetail(jobClass, jobKey, jobDataMap)
+                : methodExecuteJobDetail(jobClass, jobKey, jobDataMap);
 
         return addJobSmartly(jobDetail, group);
     }
