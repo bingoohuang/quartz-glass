@@ -2,7 +2,6 @@ package org.n3r.quartz.glass.web.util;
 
 import com.google.common.base.Splitter;
 import org.apache.commons.lang3.StringUtils;
-import org.n3r.quartz.glass.SpringConfig;
 import org.n3r.quartz.glass.job.GlassTriggerFactoryBean;
 import org.n3r.quartz.glass.job.annotation.GlassJob;
 import org.n3r.quartz.glass.job.annotation.GlassTrigger;
@@ -17,12 +16,11 @@ import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 
 import javax.annotation.PostConstruct;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.UUID;
 
 public class JobsScanner {
-    private Logger log = LoggerFactory.getLogger(JobsScanner.class);
-    private String basePackage;
+    Logger log = LoggerFactory.getLogger(JobsScanner.class);
+    String basePackage;
 
     @Autowired
     JobAdder jobAdder;
@@ -37,9 +35,8 @@ public class JobsScanner {
         provider.addIncludeFilter(new AnnotationTypeFilter(GlassJob.class));
 
         try {
-            Iterable<String> basePackages = Splitter.on(',')
-                    .omitEmptyStrings().trimResults().split(basePackage);
-            for (String bp : basePackages) {
+            Splitter splitter = Splitter.on(',').omitEmptyStrings().trimResults();
+            for (String bp : splitter.split(basePackage)) {
                 for (BeanDefinition definition : provider.findCandidateComponents(bp)) {
                     String beanClassName = definition.getBeanClassName();
                     Class<?> jobClass = Class.forName(beanClassName);
@@ -68,8 +65,7 @@ public class JobsScanner {
     private void createTriggerByGlassTrigger(Class<?> clazz, GlassTrigger glassTrigger) throws Exception {
         GlassTriggerFactoryBean factoryBean = new GlassTriggerFactoryBean();
         if (StringUtils.isBlank(glassTrigger.name())) {
-            String now = new SimpleDateFormat(SpringConfig.DATE_FORMAT).format(new Date());
-            factoryBean.setName("Auto@" + now);
+            factoryBean.setName("Auto@" + UUID.randomUUID().hashCode());
         } else {
             factoryBean.setName(glassTrigger.name());
         }
