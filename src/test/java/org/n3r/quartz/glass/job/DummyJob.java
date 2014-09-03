@@ -1,4 +1,4 @@
-package org.n3r.quartz.glass.job.demo;
+package org.n3r.quartz.glass.job;
 
 import org.n3r.quartz.glass.job.annotation.GlassJob;
 import org.n3r.quartz.glass.job.annotation.JobArgument;

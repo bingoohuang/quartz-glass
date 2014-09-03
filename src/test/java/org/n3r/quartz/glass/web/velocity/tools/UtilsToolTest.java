@@ -3,7 +3,7 @@ package org.n3r.quartz.glass.web.velocity.tools;
 import org.joda.time.DateTime;
 import org.junit.Assert;
 import org.junit.Test;
-import org.n3r.quartz.glass.job.demo.DummyJob;
+import org.n3r.quartz.glass.job.DummyJob;
 import org.n3r.quartz.glass.tools.UtilsTool;
 import org.quartz.impl.JobDetailImpl;
 

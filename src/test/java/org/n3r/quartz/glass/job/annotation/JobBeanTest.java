@@ -2,7 +2,7 @@ package org.n3r.quartz.glass.job.annotation;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.n3r.quartz.glass.job.demo.DummyJob;
+import org.n3r.quartz.glass.job.DummyJob;
 
 public class JobBeanTest {
     @Test
