@@ -60,6 +60,7 @@ public class DiamondTriggersFactoryBean implements InitializingBean {
                 log.warn("unschedule job error", e);
             }
         }
+        triggers.clear();
     }
 
     private void addTriggerBeans(List<TriggerBean> triggerBeans) {
