@@ -8,7 +8,7 @@
     </parent>
     <groupId>com.github.bingoohuang</groupId>
     <artifactId>quartz-glass</artifactId>
-    <version>0.0.5-SNAPSHOT</version>
+    <version>0.0.5</version>
 
     <name>quartz-glass</name>
     <description>A web user interface for quartz</description>
