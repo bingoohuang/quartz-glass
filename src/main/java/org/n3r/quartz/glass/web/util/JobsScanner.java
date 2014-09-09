@@ -1,6 +1,7 @@
 package org.n3r.quartz.glass.web.util;
 
 import com.google.common.base.Splitter;
+import com.google.common.primitives.UnsignedInts;
 import org.apache.commons.lang3.StringUtils;
 import org.n3r.quartz.glass.job.GlassTriggerFactoryBean;
 import org.n3r.quartz.glass.job.annotation.GlassJob;
@@ -65,7 +66,7 @@ public class JobsScanner {
     private void createTriggerByGlassTrigger(Class<?> clazz, GlassTrigger glassTrigger) throws Exception {
         GlassTriggerFactoryBean factoryBean = new GlassTriggerFactoryBean();
         if (StringUtils.isBlank(glassTrigger.name())) {
-            factoryBean.setName("Auto@" + UUID.randomUUID().hashCode());
+            factoryBean.setName("Auto@" + UnsignedInts.toString(UUID.randomUUID().hashCode()));
         } else {
             factoryBean.setName(glassTrigger.name());
         }
