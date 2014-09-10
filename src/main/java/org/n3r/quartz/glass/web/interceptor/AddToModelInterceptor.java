@@ -39,7 +39,8 @@ public class AddToModelInterceptor extends HandlerInterceptorAdapter {
 
         model.addAttribute("standby", quartzScheduler.isInStandbyMode());
         model.addAttribute("root", configuration.getRoot());
-        model.addAttribute("current", URLEncoder.encode(request.getRequestURI(), "UTF-8"));
+        String current = request.getServletPath() + request.getPathInfo();
+        model.addAttribute("current", URLEncoder.encode(current, "UTF-8"));
         model.addAttribute("utils", utilsTool);
         model.addAttribute("format", formatTool);
         model.addAttribute("version", version);

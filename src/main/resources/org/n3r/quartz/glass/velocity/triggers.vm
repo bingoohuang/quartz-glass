@@ -64,13 +64,13 @@
                             </a>
                         #end
                     </td>
-##                    <td style="text-align: center;">
-##                        <a onclick="javascript:return(confirm('Are you sure you want to delete ?'));"
-##                           href="$root/jobs/$format.html($job.group)/$format.html($job.name)/triggers/$format.html($trigger.group)/$format.html($trigger.name)/delete?redirect=$current"
-##                           title="delete">
-##                            <img alt="delete" src="$root/image/delete.png"/>
-##                        </a>
-##                    </td>
+                    <td style="text-align: center;">
+                        <a onclick="javascript:return(confirm('Are you sure you want to delete ?'));"
+                           href="$root/jobs/$format.html($job.group)/$format.html($job.name)/triggers/$format.html($trigger.group)/$format.html($trigger.name)/delete?redirect=$current"
+                           title="delete">
+                            <img alt="delete" src="$root/image/delete.png"/>
+                        </a>
+                    </td>
                 </tr>
                 <tr>
                     <td colspan="11">
