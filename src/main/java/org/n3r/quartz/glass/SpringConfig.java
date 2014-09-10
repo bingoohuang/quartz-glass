@@ -38,8 +38,8 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.Properties;
 
-@org.springframework.context.annotation.Configuration
 @EnableWebMvc
+@org.springframework.context.annotation.Configuration
 @ComponentScan(basePackages = {"org.n3r.quartz.glass"})
 public class SpringConfig extends WebMvcConfigurerAdapter {
     public static final String DATE_FORMAT = "yyyy-MM-dd HH:mm:ss";
