@@ -80,7 +80,7 @@ public class DiamondTriggersFactoryBean implements InitializingBean {
         if ("JSON".equalsIgnoreCase(format)) return parseJSON(triggers);
         if ("PROP".equalsIgnoreCase(format)) return parseProp(triggers);
 
-        throw new RuntimeException("unkown format " + format + ", only JSON or PROP allowed");
+        throw new RuntimeException("unknown format " + format + ", only JSON or PROP allowed");
     }
 
     /*

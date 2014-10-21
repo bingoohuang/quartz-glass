@@ -87,6 +87,7 @@ public class SpringConfig extends WebMvcConfigurerAdapter {
         factory.setJobFactory(glassJobFactory);
 
         Properties properties = new Properties();
+        properties.setProperty("org.quartz.scheduler.skipUpdateCheck","true");
         properties.setProperty("org.quartz.threadPool.class", SimpleThreadPool.class.getName());
         properties.setProperty("org.quartz.threadPool.threadCount", "15");
         properties.setProperty("org.quartz.threadPool.threadPriority", "4");
