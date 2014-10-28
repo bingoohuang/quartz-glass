@@ -110,8 +110,9 @@ public class GlassTriggerFactoryBean implements FactoryBean<Trigger>, BeanNameAw
         if (toDate != null) builder.endAt(toDate);
 
         JobDetail jobDetail = jobAdder.createJobDetail(jobClass, group, jobDataMap);
+        System.out.println("JobDetail:" + System.identityHashCode(jobDetail));
 
-        this.trigger = builder.forJob(jobDetail)
+        this.trigger = builder.forJob(jobDetail.getKey())
                 .withSchedule(parser.getScheduleBuilder())
                 .usingJobData(triggerDataMap)
                 .build();
@@ -132,6 +133,6 @@ public class GlassTriggerFactoryBean implements FactoryBean<Trigger>, BeanNameAw
 
     @Override
     public boolean isSingleton() {
-        return true;
+        return false;
     }
 }

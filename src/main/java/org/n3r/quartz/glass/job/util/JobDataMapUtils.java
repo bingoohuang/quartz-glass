@@ -14,7 +14,7 @@ public class JobDataMapUtils {
         StringBuilder str = new StringBuilder();
 
         for (String key : jobDataMap.getKeys()) {
-            if (GlassConstants.METHOD_INVOKER.equals(key)) continue;
+            if (GlassConstants.POJO_JOB_META.equals(key)) continue;
             if (GlassConstants.GLASS_SCHEDULER.equals(key)) continue;
 
             if (str.length() > 0) str.append(", ");
@@ -44,7 +44,7 @@ public class JobDataMapUtils {
         int leftKeys = 0;
 
         for (String key : left.getKeys()) {
-            if (GlassConstants.METHOD_INVOKER.equals(key)) continue;
+            if (GlassConstants.POJO_JOB_META.equals(key)) continue;
             if (GlassConstants.GLASS_SCHEDULER.equals(key)) continue;
 
             ++leftKeys;
@@ -53,7 +53,7 @@ public class JobDataMapUtils {
 
         Set<String> rightKeySet = right.keySet();
         int rightKeys = rightKeySet.size();
-        if (rightKeySet.contains(GlassConstants.METHOD_INVOKER)) --rightKeys;
+        if (rightKeySet.contains(GlassConstants.POJO_JOB_META)) --rightKeys;
         if (rightKeySet.contains(GlassConstants.GLASS_SCHEDULER)) --rightKeys;
 
         return leftKeys == rightKeys;

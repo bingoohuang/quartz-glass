@@ -8,7 +8,6 @@ import org.quartz.impl.matchers.GroupMatcher;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean;
 import org.springframework.stereotype.Component;
-import org.springframework.util.MethodInvoker;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
@@ -34,11 +33,12 @@ public class JobAdder {
                 ? createNormalJobDetail(jobClass, jobKey, jobDataMap)
                 : methodExecuteJobDetail(jobClass, jobKey, jobDataMap);
 
-        return addJobSmartly(jobDetail, group);
+        JobDetail usedJobDetail = addJobSmartly(jobDetail, group);
+        return usedJobDetail;
     }
 
 
-    private JobDetail addJobSmartly(JobDetail thisJobDetail, String group) throws SchedulerException {
+    private synchronized JobDetail addJobSmartly(JobDetail thisJobDetail, String group) throws SchedulerException {
         for (String jobGroup : quartzScheduler.getJobGroupNames()) {
             if (!jobGroup.equals(group)) continue;
 
@@ -46,13 +46,13 @@ public class JobAdder {
                 JobDetail jobDetail = quartzScheduler.getJobDetail(jobKey);
                 if (jobDetail.getJobClass() != thisJobDetail.getJobClass()) continue;
 
-                MethodInvoker methodInvoker = (MethodInvoker) jobDetail.getJobDataMap().get(GlassConstants.METHOD_INVOKER);
-                MethodInvoker thisInvoker = (MethodInvoker) thisJobDetail.getJobDataMap().get(GlassConstants.METHOD_INVOKER);
+                PojoJobMeta pojoJobMeta = (PojoJobMeta) jobDetail.getJobDataMap().get(GlassConstants.POJO_JOB_META);
+                PojoJobMeta thisPojoJobMeta = (PojoJobMeta) thisJobDetail.getJobDataMap().get(GlassConstants.POJO_JOB_META);
                 // check whether the job data map is equal
                 boolean jobDataMapEquals = jobDataMapEquals(jobDetail, thisJobDetail);
-                if (methodInvoker == null && thisInvoker == null && jobDataMapEquals) return jobDetail;
-                if (methodInvoker != null && thisInvoker != null && jobDataMapEquals
-                        && methodInvoker.getTargetClass() == thisInvoker.getTargetClass()) return jobDetail;
+                if (pojoJobMeta == null && thisPojoJobMeta == null && jobDataMapEquals) return jobDetail;
+                if (pojoJobMeta != null && thisPojoJobMeta != null && jobDataMapEquals
+                        && pojoJobMeta.getTargetClass() == thisPojoJobMeta.getTargetClass()) return jobDetail;
             }
         }
 
@@ -78,12 +78,32 @@ public class JobAdder {
         factoryBean.setTargetMethod(findExecuteMethod(clazz));
         boolean allowConcurrent = !clazz.isAnnotationPresent(DisallowConcurrentExecution.class);
         factoryBean.setConcurrent(allowConcurrent);
+
         factoryBean.afterPropertiesSet();
 
         JobDetail jobDetail = factoryBean.getObject();
-        jobDetail.getJobDataMap().putAll(jobDataMapping);
+        JobDataMap jobDataMap = jobDetail.getJobDataMap();
+        jobDataMap.putAll(jobDataMapping);
+        jobDataMap.remove("methodInvoker");
+
+        PojoJobMeta pojoJobMeta = createPojoJobMeta(clazz, jobKey, jobDataMapping);
+        jobDataMap.put(GlassConstants.POJO_JOB_META, pojoJobMeta);
 
         return jobDetail;
+    }
+
+    private PojoJobMeta createPojoJobMeta(Class<?> clazz, JobKey jobKey, JobDataMap jobDataMapping) {
+        PojoJobMeta pojoJobMeta = new PojoJobMeta();
+        pojoJobMeta.setGroup(jobKey.getGroup());
+        pojoJobMeta.setName(jobKey.getName());
+
+        pojoJobMeta.setTargetClass(clazz);
+        pojoJobMeta.setTargetMethod(findExecuteMethod(clazz));
+        boolean allowConcurrent = !clazz.isAnnotationPresent(DisallowConcurrentExecution.class);
+        pojoJobMeta.setConcurrent(allowConcurrent);
+        pojoJobMeta.setJobDataMap(jobDataMapping);
+
+        return pojoJobMeta;
     }
 
     private String findExecuteMethod(Class<?> defClass) {
