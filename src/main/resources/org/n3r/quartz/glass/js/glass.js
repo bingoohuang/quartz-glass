@@ -97,6 +97,6 @@ viewStackTrace = function (executionId, index) {
 }
 
 viewLogs = function (executionId, pageIndex) {
-    window.open('/glass/logs/' + executionId, 'logs-' + executionId, 'width=1200,height=800');
+    window.open('/glass/traces/' + executionId, 'logs-' + executionId, 'width=1200,height=800');
 }
 
