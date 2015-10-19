@@ -10,7 +10,6 @@ import org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 
 import static com.google.common.collect.ImmutableList.of;
@@ -108,11 +107,9 @@ public class JobAdder {
 
     private String findExecuteMethod(Class<?> defClass) {
         ArrayList<Method> candidates = new ArrayList<Method>();
-        for (Method method : defClass.getDeclaredMethods()) {
+        for (Method method : defClass.getMethods()) {
             String methodName = method.getName();
             if (methodName.startsWith("get") || methodName.startsWith("set")) continue; // not setter/getter
-            if (!Modifier.isPublic(method.getModifiers())) continue; // should be public
-            if (Modifier.isStatic(method.getModifiers())) continue; // non static
             if (method.getParameterTypes().length > 0) continue; // no parameters
 
             candidates.add(method);
