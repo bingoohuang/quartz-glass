@@ -111,6 +111,7 @@ public class JobAdder {
             String methodName = method.getName();
             if (methodName.startsWith("get") || methodName.startsWith("set")) continue; // not setter/getter
             if (method.getParameterTypes().length > 0) continue; // no parameters
+            if (method.getDeclaringClass() == Object.class) continue;
 
             candidates.add(method);
         }
