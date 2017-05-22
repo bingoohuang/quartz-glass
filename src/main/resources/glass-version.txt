@@ -1,2 +1,2 @@
-application.version=0.0.5
-compilation.date=2014-09-07 22:26:11
+application.version=0.0.9
+compilation.date=2017-05-22 11:41:35

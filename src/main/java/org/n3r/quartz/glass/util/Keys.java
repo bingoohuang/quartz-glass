@@ -2,8 +2,12 @@ package org.n3r.quartz.glass.util;
 
 import com.google.common.collect.HashMultiset;
 import com.google.common.collect.Multiset;
+import lombok.val;
 import org.quartz.Scheduler;
 import org.quartz.utils.Key;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Keys {
     static Multiset<String> jobIndex = HashMultiset.create();
@@ -15,7 +19,8 @@ public class Keys {
     }
 
     public static String getFireKey() {
-        return "FireNow";
+        val format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+        return "FireNow-" + format.format(new Date());
     }
 
     public static String desc(Key<?> key) {
